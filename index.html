@@ -3,12 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نظام البحث بالرقم القومي</title>
+    <title>نظام البحث بالرقم القومي والبريد الإلكتروني</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body {
             font-family: 'Tajawal', sans-serif;
@@ -29,482 +26,101 @@
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        .info-item {
-            transition: all 0.2s ease;
-        }
-        .info-item:hover {
-            transform: translateX(-5px);
-            background: linear-gradient(to right, #f8fafc, #f0f4f8);
-        }
-        .pulse {
-            animation: pulse 2s infinite;
-        }
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.03); }
-            100% { transform: scale(1); }
-        }
-        .dynamic-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 16px;
-        }
-        .column-header {
-            background: linear-gradient(to right, #4c6ef5, #3b5bdb);
-            color: white;
-            padding: 8px 16px;
-            border-radius: 8px;
-            margin-bottom: 10px;
-            font-weight: 600;
-        }
-        .minimal-footer {
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(10px);
-            padding: 10px 0;
-            text-align: center;
-            font-size: 0.85rem;
-            color: #4a5568;
-            border-top: 1px solid #e2e8f0;
-        }
     </style>
 </head>
 <body class="bg-gradient-to-br from-slate-50 to-slate-100 text-slate-800">
 
-    <div class="container mx-auto px-4 sm:px-6 md:px-8 py-8 min-h-screen flex flex-col items-center">
-        
-        <header class="w-full max-w-3xl text-center mb-8 mt-4">
-            <div class="flex justify-center mb-4">
-                <div class="bg-gradient-to-r from-blue-600 to-blue-700 rounded-full p-3 shadow-lg">
-                    <i class="fas fa-id-card text-white text-3xl"></i>
-                </div>
-            </div>
-            <h1 class="text-3xl sm:text-4xl font-bold text-slate-800">نظام الاستعلام بالرقم القومي</h1>
-            <p class="mt-4 text-lg text-slate-600 max-w-2xl mx-auto">
-                أدخل الرقم القومي المكون من 14 رقمًا للبحث عن البيانات المرتبطة به في النظام
-            </p>
-            
-            <!-- شريط تحديث البيانات -->
-            <div class="mt-4 flex justify-center">
-                <button id="manual-refresh" class="text-white bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 font-medium rounded-lg text-sm px-4 py-2.5 transition-colors duration-300 flex items-center">
-                    <i class="fas fa-sync-alt mr-2"></i> تحديث البيانات الآن
+    <div class="container mx-auto max-w-2xl py-16 px-4">
+        <div class="search-container rounded-2xl bg-white p-8 mb-8">
+            <h1 class="text-3xl font-bold mb-4 text-center text-blue-700">تسجيل الدخول</h1>
+            <form id="login-form" class="flex flex-col gap-4">
+                <input type="email" id="email-input"
+                    class="bg-slate-50 border border-slate-300 text-slate-900 text-lg rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block w-full px-4 py-3"
+                    placeholder="ادخل البريد الإلكتروني..." required>
+                <input type="text" id="national-id-input"
+                    class="bg-slate-50 border border-slate-300 text-slate-900 text-lg rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block w-full px-4 py-3"
+                    placeholder="ادخل الرقم القومي (14 رقمًا)..." maxlength="14" required>
+                <button type="submit"
+                    class="w-full text-white bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-xl text-lg px-6 py-3">
+                    تسجيل الدخول
                 </button>
-            </div>
-        </header>
-
-        <main class="w-full max-w-3xl bg-white rounded-2xl shadow-xl overflow-hidden search-container">
-            <div class="bg-gradient-to-r from-blue-600 to-blue-700 py-4 px-6">
-                <h2 class="text-xl font-bold text-white flex items-center">
-                    <i class="fas fa-search mr-3"></i> البحث بالرقم القومي
-                </h2>
-            </div>
-            
-            <div class="p-6 sm:p-8">
-                <form id="search-form" class="flex flex-col sm:flex-row items-center gap-4">
-                    <div class="relative w-full">
-                        <div class="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
-                            <i class="fas fa-id-card text-blue-500 text-xl"></i>
-                        </div>
-                        <input type="text" id="national-id-input" 
-                               class="search-input bg-slate-50 border border-slate-300 text-slate-900 text-lg rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block w-full pr-12 p-4 transition-colors duration-300 shadow-sm" 
-                               placeholder="ادخل الرقم القومي (14 رقمًا)..." 
-                               maxlength="14"
-                               required>
-                    </div>
-                    <button type="submit" class="w-full sm:w-auto text-white bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-bold rounded-xl text-lg px-8 py-4 transition-all duration-300 transform hover:scale-[1.02] shadow-lg pulse">
-                        <i class="fas fa-search mr-2"></i> بحث
-                    </button>
-                </form>
-
-                <div id="results-container" class="mt-8">
-                    <div class="text-center text-slate-500 py-8">
-                        <div class="flex justify-center mb-4">
-                            <div class="bg-blue-100 rounded-full p-4">
-                                <i class="fas fa-id-card text-blue-500 text-3xl"></i>
-                            </div>
-                        </div>
-                        <h3 class="mt-2 text-xl font-bold text-slate-700">في انتظار البحث</h3>
-                        <p class="mt-2 text-base text-slate-500">الرجاء إدخال الرقم القومي للبحث عن البيانات المرتبطة به</p>
-                    </div>
-                </div>
-            </div>
-        </main>
-
-        <!-- فاصل بين الأقسام -->
-        <div class="w-full max-w-3xl mt-10 mb-6 border-t border-slate-200"></div>
-        
-        <!-- قسم منفصل للتعليمات -->
-        <div id="instructions-section" class="w-full max-w-3xl bg-white rounded-xl p-6 shadow-md mt-4 hidden">
-            <h3 class="text-xl font-bold text-slate-800 mb-4 flex items-center">
-                <i class="fas fa-info-circle text-blue-600 mr-2"></i> تعليمات الاستخدام
-            </h3>
-            
-            <div class="space-y-4">
-                <div class="flex items-start">
-                    <div class="bg-blue-100 p-2 rounded-lg mr-3 mt-1">
-                        <i class="fas fa-1 text-blue-600"></i>
-                    </div>
-                    <div>
-                        <p class="font-medium text-slate-800">أدخل الرقم القومي</p>
-                        <p class="text-slate-600 mt-1">قم بإدخال الرقم القومي المكون من 14 رقماً في حقل البحث</p>
-                    </div>
-                </div>
-                
-                <div class="flex items-start">
-                    <div class="bg-blue-100 p-2 rounded-lg mr-3 mt-1">
-                        <i class="fas fa-2 text-blue-600"></i>
-                    </div>
-                    <div>
-                        <p class="font-medium text-slate-800">انقر على زر البحث</p>
-                        <p class="text-slate-600 mt-1">اضغط على زر "بحث" لاستعلام عن البيانات</p>
-                    </div>
-                </div>
-                
-                <div class="flex items-start">
-                    <div class="bg-blue-100 p-2 rounded-lg mr-3 mt-1">
-                        <i class="fas fa-3 text-blue-600"></i>
-                    </div>
-                    <div>
-                        <p class="font-medium text-slate-800">اطّلع على النتائج</p>
-                        <p class="text-slate-600 mt-1">ستظهر البيانات المرتبطة بالرقم القومي في الأسفل</p>
-                    </div>
-                </div>
-            </div>
+            </form>
         </div>
-        
-        <!-- تذييل الصفحة في قسم منفصل -->
-        <div id="footer-section" class="w-full max-w-3xl bg-white rounded-xl p-6 shadow-md mt-4 hidden">
-            <div class="flex flex-col md:flex-row justify-between items-center">
-                <div class="mb-4 md:mb-0">
-                    <p class="font-medium text-slate-800">نظام استعلام البيانات</p>
-                    <p class="text-sm text-slate-600 mt-1">أداة متطورة للبحث بالرقم القومي</p>
-                </div>
-                
-                <div class="flex space-x-4">
-                    <a href="#" class="text-blue-600 hover:text-blue-800">
-                        <i class="fab fa-facebook text-xl"></i>
-                    </a>
-                    <a href="#" class="text-blue-400 hover:text-blue-600">
-                        <i class="fab fa-twitter text-xl"></i>
-                    </a>
-                    <a href="#" class="text-red-600 hover:text-red-800">
-                        <i class="fab fa-youtube text-xl"></i>
-                    </a>
-                </div>
-            </div>
-            
-            <div class="mt-4 pt-4 border-t border-slate-200 text-center text-sm text-slate-500">
-                &copy; 2025 - جميع الحقوق محفوظة لنظام استعلام البيانات
-            </div>
+
+        <div id="result-section" class="result-card bg-white rounded-2xl p-6 mt-6 shadow-lg" style="display:none;">
+            <h2 class="text-2xl font-bold text-green-700 mb-4">بيانات المستخدم:</h2>
+            <div id="user-data"></div>
         </div>
-        
-        <!-- أزرار التحكم بالأقسام -->
-        <div class="w-full max-w-3xl mt-6 flex justify-center gap-4">
-            <button id="toggle-instructions" class="text-blue-600 hover:text-blue-800 bg-blue-50 px-4 py-2 rounded-lg flex items-center">
-                <i class="fas fa-info-circle mr-2"></i> عرض التعليمات
-            </button>
-            <button id="toggle-footer" class="text-blue-600 hover:text-blue-800 bg-blue-50 px-4 py-2 rounded-lg flex items-center">
-                <i class="fas fa-file-contract mr-2"></i> عرض التذييل
-            </button>
+        <div id="error-section" class="bg-red-100 border border-red-300 text-red-700 rounded-xl p-4 mt-6" style="display:none;">
+            <span id="error-message"></span>
         </div>
     </div>
 
     <script>
-        // متغيرات التطبيق
-        let data = [];
-        let dataLoaded = false;
-        let refreshTimer = null;
-        const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTzgbVvo7Lr2cDSpye72KpPs7rX9b7K_86eNdKwNHrd-mo7W3cV2gDWoY727icy0TYwWHKfGRJPHHlY/pub?output=csv";
+        // رابط جدول جوجل شيت بصيغة JSON (استبدله بالرابط الخاص بك)
+        const SHEET_URL = "https://opensheet.elk.sh/YOUR_GOOGLE_SHEET_ID/Sheet1";
+        // مثال: https://opensheet.elk.sh/1bI6tNQp6i7A4n6m0sJkOe3pJvXk7pqc6FQw9gQ6w3g3M/Sheet1
 
-        // عناصر DOM
-        const searchForm = document.getElementById('search-form');
-        const nationalIdInput = document.getElementById('national-id-input');
-        const resultsContainer = document.getElementById('results-container');
-        const manualRefreshButton = document.getElementById('manual-refresh');
-        const instructionsSection = document.getElementById('instructions-section');
-        const footerSection = document.getElementById('footer-section');
-        const toggleInstructionsBtn = document.getElementById('toggle-instructions');
-        const toggleFooterBtn = document.getElementById('toggle-footer');
+        let usersData = [];
 
-        // تقييد الإدخال بالأرقام فقط
-        nationalIdInput.addEventListener('input', function() {
-            this.value = this.value.replace(/\D/g, '');
-        });
-
-        // دالة لتحميل البيانات من Google Sheets
-        async function fetchDataFromSheet() {
+        // تحميل البيانات من الشيت
+        async function loadData() {
             try {
-                // إظهار رسالة التحميل
-                resultsContainer.innerHTML = `
-                    <div class="text-center py-8">
-                        <div class="flex justify-center mb-4">
-                            <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-600"></div>
-                        </div>
-                        <h3 class="mt-2 text-xl font-bold text-slate-700">جاري تحديث البيانات</h3>
-                        <p class="mt-2 text-base text-slate-500">الرجاء الانتظار جاري تحميل أحدث البيانات من النظام</p>
-                    </div>
-                `;
-                
                 const response = await fetch(SHEET_URL);
-                const csvData = await response.text();
-                
-                // تحويل CSV إلى مصفوفة كائنات
-                data = csvToArray(csvData);
-                dataLoaded = true;
-                
-                // إظهار رسالة نجاح
-                resultsContainer.innerHTML = `
-                    <div class="text-center py-8">
-                        <div class="flex justify-center mb-4">
-                            <div class="bg-green-100 rounded-full p-4">
-                                <i class="fas fa-check-circle text-green-500 text-3xl"></i>
-                            </div>
-                        </div>
-                        <h3 class="mt-2 text-xl font-bold text-green-700">تم تحديث البيانات بنجاح</h3>
-                        <p class="mt-2 text-base text-slate-500">يمكنك الآن البحث باستخدام الرقم القومي</p>
-                    </div>
-                `;
-                
-                // بدء مؤقت التحديث التلقائي
-                startAutoRefresh();
-                
+                usersData = await response.json();
             } catch (error) {
-                console.error('حدث خطأ في جلب البيانات:', error);
-                
-                // إظهار رسالة خطأ
-                displayMessage('خطأ في تحديث البيانات', 'حدث خطأ أثناء محاولة تحديث البيانات. سيتم المحاولة مرة أخرى تلقائياً.', 'error');
-                
-                // المحاولة مرة أخرى بعد 5 دقائق في حالة الخطأ
-                setTimeout(fetchDataFromSheet, 5 * 60 * 1000);
+                document.getElementById('error-section').style.display = "block";
+                document.getElementById('error-message').textContent = "حدث خطأ أثناء تحميل البيانات. الرجاء المحاولة لاحقًا.";
             }
         }
+        loadData();
 
-        // بدء التحديث التلقائي كل ساعة
-        function startAutoRefresh() {
-            // إلغاء أي مؤقت سابق
-            if (refreshTimer) {
-                clearTimeout(refreshTimer);
-            }
-            
-            // جدولة التحديث التالي
-            refreshTimer = setTimeout(() => {
-                fetchDataFromSheet();
-            }, 60 * 60 * 1000);
-        }
-
-        // دالة لتحويل CSV إلى مصفوفة كائنات
-        function csvToArray(csv) {
-            const lines = csv.split('\n');
-            const result = [];
-            
-            if (lines.length < 2) return result;
-            
-            // استخراج أسماء الأعمدة من السطر الأول
-            const headers = lines[0].split(',').map(header => header.trim());
-            
-            for (let i = 1; i < lines.length; i++) {
-                if (!lines[i].trim()) continue;
-                
-                const obj = {};
-                const currentline = lines[i].split(',');
-                
-                for (let j = 0; j < headers.length; j++) {
-                    obj[headers[j]] = currentline[j] ? currentline[j].trim() : '';
-                }
-                
-                result.push(obj);
-            }
-            
-            return result;
-        }
-
-        // تحميل البيانات عند النقر على زر التحديث اليدوي
-        manualRefreshButton.addEventListener('click', fetchDataFromSheet);
-
-        // تحميل البيانات عند تحميل الصفحة
-        window.addEventListener('DOMContentLoaded', () => {
-            fetchDataFromSheet();
-        });
-
-        // البحث في البيانات
-        searchForm.addEventListener('submit', function(event) {
+        // التعامل مع نموذج الدخول
+        document.getElementById('login-form').addEventListener('submit', function(event) {
             event.preventDefault();
-            const searchId = nationalIdInput.value.trim();
+            const email = document.getElementById('email-input').value.trim();
+            const nationalId = document.getElementById('national-id-input').value.trim();
 
-            if (!dataLoaded) {
-                displayMessage('البيانات لم تحمل بعد', 'الرجاء الانتظار حتى يتم تحميل البيانات من النظام.', 'error');
+            // التحقق من صحة الرقم القومي
+            if (nationalId.length !== 14 || !/^\d{14}$/.test(nationalId)) {
+                showError("الرقم القومي يجب أن يتكون من 14 رقمًا.");
                 return;
             }
 
-            if (searchId.length !== 14) {
-                displayMessage('خطأ في الإدخال', 'الرقم القومي يجب أن يتكون من 14 رقمًا فقط.', 'error');
-                return;
+            // البحث عن المستخدم
+            const user = usersData.find(item =>
+                item["الرقم القومى"] === nationalId && item["البريد"] === email
+            );
+
+            if (user) {
+                showResult(user);
+            } else {
+                showError("بيانات الدخول غير صحيحة أو غير موجودة.");
             }
+        });
 
-            // إظهار رسالة التحميل
-            displayLoading();
-
-            // محاكاة وقت التحميل
-            setTimeout(() => {
-                const result = data.find(item => item["الرقم القومى"] === searchId);
-
-                if (result) {
-                    displayResult(result);
-                } else {
-                    displayMessage('لم يتم العثور على نتائج', `لا توجد بيانات مرتبطة بالرقم القومي ${searchId}.`, 'not_found');
+        function showResult(user) {
+            document.getElementById('error-section').style.display = "none";
+            document.getElementById('result-section').style.display = "block";
+            let userHtml = "<ul class='list-disc pr-6'>";
+            for (const key in user) {
+                if (user[key]) {
+                    userHtml += `<li><strong>${key}:</strong> ${user[key]}</li>`;
                 }
-            }, 800);
-        });
-
-        // دالة لتعيين الأيقونات حسب نوع الحقل
-        function getIconForField(fieldName) {
-            const iconMap = {
-                'الاسم': 'fas fa-user',
-                'الرقم القومى': 'fas fa-id-card',
-                'مرتب يوليو +نقدى': 'fas fa-money-bill-wave',
-                'عدد التذاكر': 'fas fa-ticket-alt',
-                'نقدى يونيو': 'fas fa-coins',
-                'المبلغ': 'fas fa-file-invoice-dollar',
-                'الصافى': 'fas fa-calculator',
-                'التاريخ': 'fas fa-calendar-alt',
-                'الراتب': 'fas fa-wallet',
-                'الوظيفة': 'fas fa-briefcase',
-                'القسم': 'fas fa-building',
-                'الهاتف': 'fas fa-phone',
-                'البريد': 'fas fa-envelope',
-                'العنوان': 'fas fa-map-marker-alt',
-                'المدينة': 'fas fa-city',
-                'الحالة': 'fas fa-info-circle'
-            };
-            
-            return iconMap[fieldName] || 'fas fa-info-circle';
-        }
-
-        // عرض النتائج ديناميكياً حسب أعمدة الجدول
-        function displayResult(result) {
-            // استخراج أسماء الحقول من النتيجة
-            const fields = Object.keys(result);
-            
-            // إزالة الرقم القومي من الحقول لعرضه في الأعلى
-            const nationalIdIndex = fields.findIndex(f => f === "الرقم القومى");
-            const nationalId = nationalIdIndex !== -1 ? result["الرقم القومى"] : 'غير معروف';
-            
-            // إزالة الرقم القومي من الحقول
-            const displayFields = fields.filter(f => f !== "الرقم القومى");
-            
-            let content = `
-                <div class="result-card bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-100 rounded-xl p-6 shadow-md">
-                    <div class="flex items-center mb-6">
-                        <div class="bg-gradient-to-r from-blue-600 to-blue-700 p-3 rounded-xl mr-4">
-                            <i class="fas fa-user-check text-white text-2xl"></i>
-                        </div>
-                        <div>
-                            <h2 class="text-2xl font-bold text-blue-800">${result['الاسم'] || 'غير معروف'}</h2>
-                            <p class="text-blue-600 mt-1">الرقم القومي: ${nationalId}</p>
-                        </div>
-                    </div>
-                    
-                    <div class="dynamic-grid gap-4">
-            `;
-            
-            // عرض جميع الحقول ديناميكياً
-            displayFields.forEach(field => {
-                const value = result[field] || 'لا توجد بيانات';
-                const icon = getIconForField(field);
-                
-                content += `
-                    <div class="info-item bg-white rounded-xl p-4 shadow-sm border border-blue-50">
-                        <div class="flex items-start">
-                            <div class="bg-blue-100 p-2 rounded-lg mr-3 mt-1">
-                                <i class="${icon} text-blue-600"></i>
-                            </div>
-                            <div class="flex-1">
-                                <div class="column-header">${field}</div>
-                                <p class="text-lg font-bold text-slate-800">${value}</p>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            });
-            
-            content += `
-                    </div>
-                    <div class="mt-6 pt-4 border-t border-blue-100 flex justify-center">
-                        <div class="text-sm text-slate-500">
-                            <i class="fas fa-info-circle mr-1"></i>
-                            تم استخراج ${displayFields.length} حقول تلقائياً - ${new Date().toLocaleTimeString('ar-EG')}
-                        </div>
-                    </div>
-                </div>
-            `;
-            resultsContainer.innerHTML = content;
-        }
-
-        // عرض الرسائل المختلفة
-        function displayMessage(title, message, type = 'info') {
-            let iconClass = '';
-            let iconColor = '';
-            let titleColor = '';
-
-            switch (type) {
-                case 'error':
-                    iconClass = 'fas fa-exclamation-triangle';
-                    iconColor = 'text-red-500';
-                    titleColor = 'text-red-700';
-                    break;
-                case 'not_found':
-                    iconClass = 'fas fa-search';
-                    iconColor = 'text-yellow-500';
-                    titleColor = 'text-yellow-700';
-                    break;
-                default:
-                    iconClass = 'fas fa-info-circle';
-                    iconColor = 'text-blue-500';
-                    titleColor = 'text-blue-700';
             }
+            userHtml += "</ul>";
+            document.getElementById('user-data').innerHTML = userHtml;
+        }
 
-            resultsContainer.innerHTML = `
-                <div class="result-card text-center py-8">
-                    <div class="flex justify-center mb-4">
-                        <div class="bg-${iconColor.replace('text-', '')} bg-opacity-20 p-4 rounded-full">
-                            <i class="${iconClass} ${iconColor} text-3xl"></i>
-                        </div>
-                    </div>
-                    <h3 class="mt-2 text-xl font-bold ${titleColor}">${title}</h3>
-                    <p class="mt-2 text-base text-slate-600 max-w-md mx-auto">${message}</p>
-                </div>
-            `;
+        function showError(message) {
+            document.getElementById('result-section').style.display = "none";
+            document.getElementById('error-section').style.display = "block";
+            document.getElementById('error-message').textContent = message;
         }
-        
-        // عرض رسالة التحميل
-        function displayLoading() {
-            resultsContainer.innerHTML = `
-                <div class="text-center py-8">
-                    <div class="flex justify-center mb-4">
-                        <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-600"></div>
-                    </div>
-                    <h3 class="mt-2 text-xl font-bold text-slate-700">جاري البحث...</h3>
-                    <p class="mt-2 text-base text-slate-500">الرجاء الانتظار جاري البحث في قاعدة البيانات</p>
-                </div>
-            `;
-        }
-        
-        // التحكم بعرض الأقسام
-        toggleInstructionsBtn.addEventListener('click', () => {
-            instructionsSection.classList.toggle('hidden');
-            toggleInstructionsBtn.innerHTML = instructionsSection.classList.contains('hidden') ? 
-                '<i class="fas fa-info-circle mr-2"></i> عرض التعليمات' : 
-                '<i class="fas fa-times mr-2"></i> إخفاء التعليمات';
-        });
-        
-        toggleFooterBtn.addEventListener('click', () => {
-            footerSection.classList.toggle('hidden');
-            toggleFooterBtn.innerHTML = footerSection.classList.contains('hidden') ? 
-                '<i class="fas fa-file-contract mr-2"></i> عرض التذييل' : 
-                '<i class="fas fa-times mr-2"></i> إخفاء التذييل';
-        });
     </script>
+
+    <footer class="minimal-footer">
+        جميع الحقوق محفوظة © 2025 | نظام البحث والربط بالرقم القومي والبريد الإلكتروني
+    </footer>
 </body>
 </html>
