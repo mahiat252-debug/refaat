@@ -6,19 +6,15 @@
     <title>نظام البحث بالرقم القومي والبريد الإلكتروني</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body {
             font-family: 'Tajawal', sans-serif;
-            background: linear-gradient(135deg, #f0f4ff 0%, #e6f0ff 100%);
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e7f4 100%);
             min-height: 100vh;
-            padding-bottom: 60px;
         }
         .search-container {
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
             transition: all 0.3s ease;
-            border-radius: 20px;
-            overflow: hidden;
         }
         .search-container:hover {
             box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
@@ -30,236 +26,54 @@
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        .header-gradient {
-            background: linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%);
-        }
-        .footer {
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(10px);
-            border-top: 1px solid rgba(0, 0, 0, 0.05);
-        }
-        .user-avatar {
-            width: 100px;
-            height: 100px;
-            border: 3px solid #1d4ed8;
-        }
-        .info-card {
-            background: linear-gradient(to right, #f9fafb, #f0f4ff);
-            border-left: 4px solid #1d4ed8;
-        }
-        .stat-card {
-            transition: all 0.3s ease;
-        }
-        .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-        }
     </style>
 </head>
-<body class="text-slate-800">
-    <!-- شريط العنوان -->
-    <div class="header-gradient py-6 text-white shadow-lg">
-        <div class="container mx-auto px-4">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center">
-                    <i class="fas fa-id-card text-3xl mr-3"></i>
-                    <h1 class="text-2xl font-bold">نظام البحث بالرقم القومي والبريد الإلكتروني</h1>
-                </div>
-                <div class="text-sm">
-                    <i class="fas fa-calendar-alt mr-2"></i>
-                    <span id="current-date">الخميس، 7 أغسطس 2025</span>
-                </div>
-            </div>
-        </div>
-    </div>
+<body class="bg-gradient-to-br from-slate-50 to-slate-100 text-slate-800">
 
-    <div class="container mx-auto max-w-4xl py-10 px-4">
-        <!-- إحصائيات النظام -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-            <div class="stat-card bg-white rounded-xl p-6 shadow-md text-center">
-                <div class="text-4xl text-blue-600 font-bold mb-2">1,248</div>
-                <div class="text-slate-600">عدد المستخدمين المسجلين</div>
-                <i class="fas fa-users text-blue-200 text-2xl mt-3"></i>
-            </div>
-            <div class="stat-card bg-white rounded-xl p-6 shadow-md text-center">
-                <div class="text-4xl text-green-600 font-bold mb-2">24</div>
-                <div class="text-slate-600">بحث تم اليوم</div>
-                <i class="fas fa-search text-green-200 text-2xl mt-3"></i>
-            </div>
-            <div class="stat-card bg-white rounded-xl p-6 shadow-md text-center">
-                <div class="text-4xl text-purple-600 font-bold mb-2">98.7%</div>
-                <div class="text-slate-600">معدل الدقة</div>
-                <i class="fas fa-chart-line text-purple-200 text-2xl mt-3"></i>
-            </div>
-        </div>
-
-        <!-- بطاقة البحث -->
-        <div class="search-container bg-white mb-8">
-            <div class="bg-blue-50 py-4 px-6 border-b border-blue-100">
-                <h2 class="text-xl font-bold text-blue-700 flex items-center">
-                    <i class="fas fa-search mr-2"></i>
-                    البحث عن مستخدم
-                </h2>
-                <p class="text-slate-600 mt-1 text-sm">أدخل البريد الإلكتروني والرقم القومي للبحث عن بيانات المستخدم</p>
-            </div>
-            
-            <div class="p-6">
-                <form id="login-form" class="flex flex-col gap-5">
-                    <div>
-                        <label class="block text-slate-700 mb-2 font-medium">
-                            <i class="fas fa-envelope mr-2 text-blue-500"></i>
-                            البريد الإلكتروني
-                        </label>
-                        <input type="email" id="email-input"
-                            class="bg-slate-50 border border-slate-300 text-slate-900 text-lg rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block w-full px-4 py-3"
-                            placeholder="ادخل البريد الإلكتروني..." required>
-                    </div>
-                    
-                    <div>
-                        <label class="block text-slate-700 mb-2 font-medium">
-                            <i class="fas fa-id-card mr-2 text-blue-500"></i>
-                            الرقم القومي
-                        </label>
-                        <div class="relative">
-                            <input type="password" id="national-id-input"
-                                class="bg-slate-50 border border-slate-300 text-slate-900 text-lg rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block w-full px-4 py-3 pr-12"
-                                placeholder="ادخل الرقم القومي (14 رقمًا)..." maxlength="14" required>
-                            <button type="button" id="toggle-visibility" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-500">
-                                <i class="far fa-eye"></i>
-                            </button>
-                        </div>
-                        <p class="text-sm text-slate-500 mt-1">يجب أن يتكون الرقم القومي من 14 رقمًا</p>
-                    </div>
-                    
-                    <button type="submit"
-                        class="w-full text-white bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-xl text-lg px-6 py-3 mt-2 flex items-center justify-center">
-                        <i class="fas fa-sign-in-alt mr-2"></i>
-                        تسجيل الدخول والبحث
-                    </button>
-                </form>
-            </div>
-        </div>
-
-        <!-- قسم النتائج -->
-        <div id="result-section" class="result-card bg-white rounded-2xl p-6 mt-6 shadow-lg" style="display:none;">
-            <div class="flex justify-between items-center mb-6 border-b border-slate-200 pb-4">
-                <h2 class="text-2xl font-bold text-green-700 flex items-center">
-                    <i class="fas fa-user-circle mr-2"></i>
-                    بيانات المستخدم
-                </h2>
-                <button id="new-search-btn" class="text-blue-600 hover:text-blue-800 flex items-center">
-                    <i class="fas fa-search mr-1"></i>
-                    بحث جديد
+    <div class="container mx-auto max-w-2xl py-16 px-4">
+        <div class="search-container rounded-2xl bg-white p-8 mb-8">
+            <h1 class="text-3xl font-bold mb-4 text-center text-blue-700">تسجيل الدخول</h1>
+            <form id="login-form" class="flex flex-col gap-4">
+                <input type="email" id="email-input"
+                    class="bg-slate-50 border border-slate-300 text-slate-900 text-lg rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block w-full px-4 py-3"
+                    placeholder="ادخل البريد الإلكتروني..." required>
+                <input type="text" id="national-id-input"
+                    class="bg-slate-50 border border-slate-300 text-slate-900 text-lg rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block w-full px-4 py-3"
+                    placeholder="ادخل الرقم القومي (14 رقمًا)..." maxlength="14" required>
+                <button type="submit"
+                    class="w-full text-white bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-xl text-lg px-6 py-3">
+                    تسجيل الدخول
                 </button>
-            </div>
-            
-            <div id="user-data" class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <!-- سيتم ملء البيانات بواسطة الجافاسكريبت -->
-            </div>
+            </form>
         </div>
-        
-        <!-- قسم الأخطاء -->
-        <div id="error-section" class="bg-red-50 border border-red-200 rounded-xl p-5 mt-6" style="display:none;">
-            <div class="flex items-start">
-                <i class="fas fa-exclamation-circle text-red-500 text-2xl mt-1 mr-3"></i>
-                <div>
-                    <h3 class="font-bold text-red-700 text-lg">خطأ في عملية البحث</h3>
-                    <p id="error-message" class="text-red-600 mt-1">حدث خطأ أثناء عملية البحث. الرجاء المحاولة مرة أخرى.</p>
-                </div>
-            </div>
+
+        <div id="result-section" class="result-card bg-white rounded-2xl p-6 mt-6 shadow-lg" style="display:none;">
+            <h2 class="text-2xl font-bold text-green-700 mb-4">بيانات المستخدم:</h2>
+            <div id="user-data"></div>
         </div>
-        
-        <!-- قسم التعليمات -->
-        <div class="bg-blue-50 rounded-2xl p-6 mt-10">
-            <h3 class="text-xl font-bold text-blue-800 mb-4 flex items-center">
-                <i class="fas fa-info-circle mr-2"></i>
-                تعليمات هامة
-            </h3>
-            <ul class="list-disc pr-6 text-slate-700 space-y-2">
-                <li>يجب إدخال البريد الإلكتروني المسجل في النظام</li>
-                <li>الرقم القومي يجب أن يتكون من 14 رقمًا فقط</li>
-                <li>تأكد من صحة البيانات قبل الضغط على زر البحث</li>
-                <li>البيانات المعروضة هي للاستخدام الرسمي فقط</li>
-                <li>للاستفسار يرجى التواصل مع الدعم الفني</li>
-            </ul>
+        <div id="error-section" class="bg-red-100 border border-red-300 text-red-700 rounded-xl p-4 mt-6" style="display:none;">
+            <span id="error-message"></span>
         </div>
     </div>
-
-    <!-- تذييل الصفحة -->
-    <footer class="footer py-4 text-center text-slate-600">
-        <div class="container mx-auto px-4">
-            <p>جميع الحقوق محفوظة © 2025 | نظام البحث والربط بالرقم القومي والبريد الإلكتروني</p>
-            <p class="text-sm mt-2">
-                <i class="fas fa-phone-alt mr-2"></i> دعم فني: 19999 | 
-                <i class="fas fa-envelope ml-4 mr-2"></i> support@nid-system.gov.eg
-            </p>
-        </div>
-    </footer>
 
     <script>
-        // تحديث التاريخ الحالي
-        const now = new Date();
-        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-        document.getElementById('current-date').textContent = now.toLocaleDateString('ar-EG', options);
-        
-        // بيانات المستخدمين (بدلاً من جلبها من جدول جوجل شيت)
-        const usersData = [
-            {
-                "الاسم": "محمد أحمد محمود",
-                "الرقم القومى": "30105271100981",
-                "البريد": "mohamed@example.com",
-                "الجنس": "ذكر",
-                "تاريخ الميلاد": "01/05/1990",
-                "المحافظة": "القاهرة",
-                "العنوان": "15 شارع التحرير، الدقي",
-                "الحالة الاجتماعية": "متزوج",
-                "الهاتف": "01001234567",
-                "الوظيفة": "مهندس برمجيات"
-            },
-            {
-                "الاسم": "فاطمة حسن محمد",
-                "الرقم القومى": "29807151100432",
-                "البريد": "fatima@example.com",
-                "الجنس": "أنثى",
-                "تاريخ الميلاد": "15/07/1995",
-                "المحافظة": "الإسكندرية",
-                "العنوان": "23 شارع سيدي بشر",
-                "الحالة الاجتماعية": "أعزب",
-                "الهاتف": "01112345678",
-                "الوظيفة": "طبيبة"
-            },
-            {
-                "الاسم": "علي سيد إبراهيم",
-                "الرقم القومى": "29912011100563",
-                "البريد": "ali@example.com",
-                "الجنس": "ذكر",
-                "تاريخ الميلاد": "01/12/1985",
-                "المحافظة": "الجيزة",
-                "العنوان": "10 شارع الهرم",
-                "الحالة الاجتماعية": "متزوج",
-                "الهاتف": "01223456789",
-                "الوظيفة": "معلم"
-            }
-        ];
+        // رابط جدول جوجل شيت بصيغة JSON (استبدله بالرابط الخاص بك)
+        const SHEET_URL = "https://opensheet.elk.sh/1IC_POuvxv9X2vE862HkoGlrvIIxnWgmJ4-jEMXRi0bk/Sheet1";
+        // مثال: https://opensheet.elk.sh/1bI6tNQp6i7A4n6m0sJkOe3pJvXk7pqc6FQw9gQ6w3g3M/Sheet1
 
-        // إظهار/إخفاء الرقم القومي
-        document.getElementById('toggle-visibility').addEventListener('click', function() {
-            const input = document.getElementById('national-id-input');
-            const icon = this.querySelector('i');
-            
-            if (input.type === 'password') {
-                input.type = 'text';
-                icon.classList.remove('fa-eye');
-                icon.classList.add('fa-eye-slash');
-            } else {
-                input.type = 'password';
-                icon.classList.remove('fa-eye-slash');
-                icon.classList.add('fa-eye');
+        let usersData = [];
+
+        // تحميل البيانات من الشيت
+        async function loadData() {
+            try {
+                const response = await fetch(SHEET_URL);
+                usersData = await response.json();
+            } catch (error) {
+                document.getElementById('error-section').style.display = "block";
+                document.getElementById('error-message').textContent = "حدث خطأ أثناء تحميل البيانات. الرجاء المحاولة لاحقًا.";
             }
-        });
+        }
+        loadData();
 
         // التعامل مع نموذج الدخول
         document.getElementById('login-form').addEventListener('submit', function(event) {
@@ -269,7 +83,7 @@
 
             // التحقق من صحة الرقم القومي
             if (nationalId.length !== 14 || !/^\d{14}$/.test(nationalId)) {
-                showError("الرقم القومي يجب أن يتكون من 14 رقمًا فقط.");
+                showError("الرقم القومي يجب أن يتكون من 14 رقمًا.");
                 return;
             }
 
@@ -281,87 +95,32 @@
             if (user) {
                 showResult(user);
             } else {
-                showError("بيانات الدخول غير صحيحة أو غير موجودة في النظام.");
+                showError("بيانات الدخول غير صحيحة أو غير موجودة.");
             }
         });
 
-        // زر البحث الجديد
-        document.getElementById('new-search-btn').addEventListener('click', function() {
-            document.getElementById('result-section').style.display = "none";
-            document.getElementById('email-input').value = "";
-            document.getElementById('national-id-input').value = "";
-            document.getElementById('email-input').focus();
-        });
-
-        // عرض النتيجة
         function showResult(user) {
             document.getElementById('error-section').style.display = "none";
             document.getElementById('result-section').style.display = "block";
-            
-            let userHtml = `
-                <div class="md:col-span-1 flex flex-col items-center">
-                    <div class="bg-gray-200 border-2 border-dashed rounded-xl w-16 h-16 flex items-center justify-center mb-4">
-                        <i class="fas fa-user text-3xl text-gray-500"></i>
-                    </div>
-                    <h3 class="text-xl font-bold text-center">${user['الاسم']}</h3>
-                    <p class="text-slate-600 text-center mt-1">${user['الوظيفة']}</p>
-                    
-                    <div class="mt-6 w-full">
-                        <div class="info-card rounded-lg p-4 mb-3">
-                            <div class="text-slate-500">الحالة الاجتماعية</div>
-                            <div class="font-bold">${user['الحالة الاجتماعية']}</div>
-                        </div>
-                        <div class="info-card rounded-lg p-4">
-                            <div class="text-slate-500">رقم الهاتف</div>
-                            <div class="font-bold">${user['الهاتف']}</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="md:col-span-2">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="bg-slate-50 rounded-lg p-4">
-                            <div class="text-slate-500">الرقم القومي</div>
-                            <div class="font-bold text-lg">${user['الرقم القومى']}</div>
-                        </div>
-                        <div class="bg-slate-50 rounded-lg p-4">
-                            <div class="text-slate-500">البريد الإلكتروني</div>
-                            <div class="font-bold">${user['البريد']}</div>
-                        </div>
-                        <div class="bg-slate-50 rounded-lg p-4">
-                            <div class="text-slate-500">تاريخ الميلاد</div>
-                            <div class="font-bold">${user['تاريخ الميلاد']}</div>
-                        </div>
-                        <div class="bg-slate-50 rounded-lg p-4">
-                            <div class="text-slate-500">الجنس</div>
-                            <div class="font-bold">${user['الجنس']}</div>
-                        </div>
-                        <div class="bg-slate-50 rounded-lg p-4 md:col-span-2">
-                            <div class="text-slate-500">المحافظة</div>
-                            <div class="font-bold">${user['المحافظة']}</div>
-                        </div>
-                        <div class="bg-slate-50 rounded-lg p-4 md:col-span-2">
-                            <div class="text-slate-500">العنوان</div>
-                            <div class="font-bold">${user['العنوان']}</div>
-                        </div>
-                    </div>
-                </div>
-            `;
-            
+            let userHtml = "<ul class='list-disc pr-6'>";
+            for (const key in user) {
+                if (user[key]) {
+                    userHtml += `<li><strong>${key}:</strong> ${user[key]}</li>`;
+                }
+            }
+            userHtml += "</ul>";
             document.getElementById('user-data').innerHTML = userHtml;
         }
 
-        // عرض الخطأ
         function showError(message) {
             document.getElementById('result-section').style.display = "none";
             document.getElementById('error-section').style.display = "block";
             document.getElementById('error-message').textContent = message;
-            
-            // إخفاء رسالة الخطأ بعد 5 ثواني
-            setTimeout(() => {
-                document.getElementById('error-section').style.display = "none";
-            }, 5000);
         }
     </script>
+
+    <footer class="minimal-footer">
+        جميع الحقوق محفوظة © 2025 | نظام البحث والربط بالرقم القومي والبريد الإلكتروني
+    </footer>
 </body>
 </html>
