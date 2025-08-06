@@ -12,7 +12,6 @@
             font-family: 'Tajawal', sans-serif;
             background: linear-gradient(135deg, #f0f4ff 0%, #e6f0ff 100%);
             min-height: 100vh;
-            padding-bottom: 60px;
         }
         .search-container {
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
@@ -53,27 +52,95 @@
             z-index: 99;
             display: none;
         }
-        .info-card {
-            background: linear-gradient(to right, #f9fafb, #f0f4ff);
-            border-left: 4px solid #1d4ed8;
-        }
         .input-error {
             border-color: #f87171 !important;
             background-color: #fef2f2 !important;
         }
+        .user-card {
+            background: linear-gradient(to right, #ffffff, #f9fafb);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
+        }
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 16px;
+            border-bottom: 1px solid #f1f5f9;
+            transition: background-color 0.2s;
+        }
+        .info-item:hover {
+            background-color: #f8fafc;
+        }
+        .info-label {
+            color: #64748b;
+            font-weight: 500;
+            min-width: 140px;
+        }
+        .info-value {
+            color: #1e293b;
+            font-weight: 600;
+            text-align: left;
+            flex: 1;
+        }
+        .highlight-box {
+            background: linear-gradient(135deg, #e0f2fe 0%, #dbeafe 100%);
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 20px;
+            border-left: 4px solid #3b82f6;
+        }
+        .section-title {
+            position: relative;
+            padding-right: 20px;
+            margin-bottom: 20px;
+        }
+        .section-title::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            bottom: -8px;
+            width: 50px;
+            height: 3px;
+            background: linear-gradient(to right, #3b82f6, #60a5fa);
+            border-radius: 3px;
+        }
+        .success-badge {
+            background: linear-gradient(to right, #10b981, #34d399);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
     </style>
 </head>
 <body class="text-slate-800">
-    <div class="container mx-auto max-w-2xl py-16 px-4">
-        <div class="search-container bg-white mb-8">
-            <div class="bg-blue-50 py-4 px-6 border-b border-blue-100">
-                <h1 class="text-2xl font-bold text-blue-700 text-center">
-                    <i class="fas fa-id-card mr-2"></i>
-                    نظام البحث بالرقم القومي والبريد الإلكتروني
-                </h1>
+    <div class="container mx-auto max-w-4xl py-10 px-4">
+        <!-- شريط العنوان -->
+        <div class="text-center mb-12">
+            <h1 class="text-3xl font-bold text-blue-700 mb-3">
+                <i class="fas fa-id-card mr-2"></i>
+                نظام البحث بالرقم القومي
+            </h1>
+            <p class="text-slate-600 max-w-2xl mx-auto">
+                نظام متكامل للبحث عن بيانات المواطنين باستخدام الرقم القومي وإدارة البريد الإلكتروني
+            </p>
+        </div>
+
+        <!-- بطاقة البحث -->
+        <div class="search-container bg-white mb-10">
+            <div class="bg-gradient-to-r from-blue-600 to-blue-700 py-5 px-6">
+                <h2 class="text-xl font-bold text-white flex items-center">
+                    <i class="fas fa-search mr-3"></i>
+                    البحث عن بيانات المواطن
+                </h2>
             </div>
             
-            <div class="p-8">
+            <div class="p-6">
                 <form id="login-form" class="flex flex-col gap-5">
                     <div>
                         <label class="block text-slate-700 mb-2 font-medium">
@@ -105,27 +172,91 @@
             </div>
         </div>
 
+        <!-- قسم النتائج -->
         <div id="result-section" class="result-card bg-white rounded-2xl p-6 mt-6 shadow-lg" style="display:none;">
-            <div class="flex justify-between items-center mb-6 border-b border-slate-200 pb-4">
-                <h2 class="text-2xl font-bold text-green-700 flex items-center">
-                    <i class="fas fa-user-circle mr-2"></i>
-                    بيانات المستخدم
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-blue-700 flex items-center">
+                    <i class="fas fa-user-circle mr-3"></i>
+                    بيانات المواطن
                 </h2>
-                <button id="new-search-btn" class="text-blue-600 hover:text-blue-800 flex items-center">
-                    <i class="fas fa-search mr-1"></i>
-                    بحث جديد
-                </button>
+                <div id="update-success" class="success-badge" style="display:none;">
+                    <i class="fas fa-check-circle"></i>
+                    تم تحديث البيانات بنجاح
+                </div>
             </div>
             
-            <div id="user-data"></div>
+            <div class="user-card">
+                <div id="user-data" class="divide-y divide-slate-100"></div>
+            </div>
+            
+            <div class="highlight-box mt-6">
+                <div class="flex items-start">
+                    <i class="fas fa-info-circle text-blue-500 text-xl mr-3 mt-1"></i>
+                    <div>
+                        <h3 class="font-bold text-blue-800">ملاحظات هامة</h3>
+                        <p class="text-slate-700 mt-2">
+                            • هذه البيانات هي للاستخدام الرسمي فقط<br>
+                            • يرجى التحقق من دقة المعلومات قبل اتخاذ أي إجراء<br>
+                            • لأي استفسار يرجى التواصل مع الدعم الفني
+                        </p>
+                    </div>
+                </div>
+            </div>
         </div>
         
+        <!-- قسم الأخطاء -->
         <div id="error-section" class="bg-red-50 border border-red-200 rounded-xl p-5 mt-6" style="display:none;">
             <div class="flex items-start">
                 <i class="fas fa-exclamation-circle text-red-500 text-2xl mt-1 mr-3"></i>
                 <div>
                     <h3 class="font-bold text-red-700 text-lg">خطأ في عملية البحث</h3>
                     <p id="error-message" class="text-red-600 mt-1">حدث خطأ أثناء عملية البحث. الرجاء المحاولة مرة أخرى.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- قسم التعليمات -->
+        <div class="bg-blue-50 rounded-2xl p-6 mt-10">
+            <h3 class="text-xl font-bold text-blue-800 mb-4 flex items-center">
+                <i class="fas fa-info-circle mr-2"></i>
+                تعليمات الاستخدام
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="flex items-start">
+                    <div class="bg-blue-100 p-2 rounded-lg mr-3">
+                        <i class="fas fa-id-card text-blue-600"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-slate-800">الرقم القومي</h4>
+                        <p class="text-slate-700 text-sm mt-1">يجب إدخال 14 رقمًا فقط دون أي أحرف أو رموز</p>
+                    </div>
+                </div>
+                <div class="flex items-start">
+                    <div class="bg-blue-100 p-2 rounded-lg mr-3">
+                        <i class="fas fa-at text-blue-600"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-slate-800">البريد الإلكتروني</h4>
+                        <p class="text-slate-700 text-sm mt-1">يجب أن يكون البريد الإلكتروني بتنسيق صحيح مثل example@domain.com</p>
+                    </div>
+                </div>
+                <div class="flex items-start">
+                    <div class="bg-blue-100 p-2 rounded-lg mr-3">
+                        <i class="fas fa-sync-alt text-blue-600"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-slate-800">تحديث البيانات</h4>
+                        <p class="text-slate-700 text-sm mt-1">يمكنك تحديث البريد الإلكتروني إذا لم يكن مرتبطًا بالرقم القومي</p>
+                    </div>
+                </div>
+                <div class="flex items-start">
+                    <div class="bg-blue-100 p-2 rounded-lg mr-3">
+                        <i class="fas fa-shield-alt text-blue-600"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-slate-800">الأمان والخصوصية</h4>
+                        <p class="text-slate-700 text-sm mt-1">جميع البيانات محمية ولا يتم مشاركتها مع أي جهات خارجية</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -146,11 +277,16 @@
                 </button>
             </div>
             
-            <div class="mb-4">
-                <p class="text-slate-600 mb-2">الرقم القومي: 
-                    <span id="user-national-id" class="font-bold"></span>
+            <div class="mb-4 bg-blue-50 rounded-lg p-4">
+                <div class="flex items-center">
+                    <i class="fas fa-info-circle text-blue-500 mr-2"></i>
+                    <p class="text-blue-800">
+                        الرقم القومي: <span id="user-national-id" class="font-bold"></span>
+                    </p>
+                </div>
+                <p id="modal-message" class="text-slate-700 mt-2">
+                    <!-- سيتم تعبئته بواسطة الجافاسكريبت -->
                 </p>
-                <p class="text-slate-600">تم العثور على خطأ في البريد الإلكتروني. الرجاء إدخال بريد إلكتروني صالح:</p>
             </div>
             
             <form id="email-form">
@@ -183,7 +319,7 @@
                         إلغاء
                     </button>
                     <button type="submit" class="flex-1 text-white bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 font-medium rounded-xl text-lg px-6 py-3">
-                        تحديث البريد
+                        حفظ البريد
                     </button>
                 </div>
             </form>
@@ -210,11 +346,19 @@
         loadData();
 
         // فتح وإغلاق نافذة البريد الإلكتروني
-        function openEmailModal(nationalId, email) {
+        function openEmailModal(nationalId, hasEmail) {
             document.getElementById('user-national-id').textContent = nationalId;
+            
+            if (hasEmail) {
+                document.getElementById('modal-message').textContent = 
+                    "تم العثور على بريد إلكتروني مسجل مسبقًا. يمكنك تحديثه الآن.";
+            } else {
+                document.getElementById('modal-message').textContent = 
+                    "لم يتم العثور على بريد إلكتروني مرتبط بهذا الرقم القومي. الرجاء إدخال بريد إلكتروني صالح.";
+            }
+            
             document.getElementById('email-modal').style.display = 'block';
             document.getElementById('email-modal-overlay').style.display = 'block';
-            document.getElementById('new-email-input').value = email || '';
             document.getElementById('new-email-input').focus();
         }
         
@@ -231,7 +375,7 @@
         document.getElementById('email-modal-overlay').addEventListener('click', closeEmailModal);
         
         // التعامل مع نموذج البحث
-        document.getElementById('login-form').addEventListener('submit', async function(event) {
+        document.getElementById('login-form').addEventListener('submit', function(event) {
             event.preventDefault();
             const email = document.getElementById('email-input').value.trim();
             const nationalId = document.getElementById('national-id-input').value.trim();
@@ -240,6 +384,8 @@
             document.getElementById('email-input').classList.remove('input-error');
             document.getElementById('national-id-input').classList.remove('input-error');
             document.getElementById('error-section').style.display = "none";
+            document.getElementById('result-section').style.display = "none";
+            document.getElementById('update-success').style.display = "none";
             
             // التحقق من صحة الرقم القومي
             if (nationalId.length !== 14 || !/^\d{14}$/.test(nationalId)) {
@@ -256,10 +402,8 @@
                 return;
             }
             
-            // البحث عن المستخدم
-            const user = usersData.find(item => 
-                item["الرقم القومى"] === nationalId
-            );
+            // البحث عن المستخدم بالرقم القومي
+            const user = usersData.find(item => item["الرقم القومى"] === nationalId);
             
             if (!user) {
                 showError("لا يوجد مستخدم بهذا الرقم القومي في النظام.");
@@ -269,13 +413,16 @@
             
             currentUser = user;
             
-            // التحقق من تطابق البريد الإلكتروني
-            if (user["البريد"] !== email) {
-                // فتح نافذة تحديث البريد
-                openEmailModal(nationalId, email);
+            // التحقق مما إذا كان البريد الإلكتروني مرتبط بالرقم القومي
+            if (user["البريد"] && user["البريد"].trim() !== '') {
+                if (user["البريد"] === email) {
+                    showResult(user);
+                } else {
+                    showError("البريد الإلكتروني المدخل غير متطابق مع البريد المسجل لهذا الرقم القومي.");
+                }
             } else {
-                // إذا كان البريد متطابقًا، عرض البيانات
-                showResult(user);
+                // إذا كان البريد غير موجود، فتح نافذة التحديث
+                openEmailModal(nationalId, false);
             }
         });
         
@@ -330,78 +477,64 @@
                 // إغلاق النافذة وعرض بيانات المستخدم
                 closeEmailModal();
                 showResult(currentUser);
+                document.getElementById('update-success').style.display = 'flex';
+                
+                // إظهار رسالة نجاح لفترة محدودة
+                setTimeout(() => {
+                    document.getElementById('update-success').style.display = 'none';
+                }, 5000);
             }
         });
-        
-        // زر البحث الجديد
-        document.getElementById('new-search-btn').addEventListener('click', function() {
-            document.getElementById('result-section').style.display = "none";
-            document.getElementById('email-input').value = "";
-            document.getElementById('national-id-input').value = "";
-            document.getElementById('email-input').focus();
-        });
 
-        // عرض النتيجة
+        // عرض النتيجة بنفس هيئة الكود الأصلي
         function showResult(user) {
             document.getElementById('error-section').style.display = "none";
             document.getElementById('result-section').style.display = "block";
             
-            let userHtml = `
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="bg-blue-50 rounded-xl p-5">
-                        <div class="flex items-center mb-4">
-                            <i class="fas fa-user text-blue-600 text-2xl mr-3"></i>
-                            <h3 class="text-xl font-bold">${user['الاسم'] || 'غير متوفر'}</h3>
+            // إنشاء عناصر واجهة المستخدم لعرض البيانات
+            let userHtml = '';
+            
+            // قائمة الحقول الهامة التي نريد عرضها أولاً
+            const mainFields = [
+                'الاسم', 'الرقم القومى', 'البريد', 
+                'تاريخ الميلاد', 'الجنس', 'المحافظة'
+            ];
+            
+            // قائمة الحقول الثانوية
+            const additionalFields = Object.keys(user).filter(
+                key => !mainFields.includes(key)
+            );
+            
+            // عرض الحقول الرئيسية
+            mainFields.forEach(key => {
+                if (user[key]) {
+                    userHtml += `
+                        <div class="info-item">
+                            <div class="info-label">${key}</div>
+                            <div class="info-value">${user[key]}</div>
                         </div>
-                        <div class="space-y-3">
-                            <div class="flex justify-between border-b border-blue-100 pb-2">
-                                <span class="text-slate-600">الرقم القومي:</span>
-                                <span class="font-bold">${user['الرقم القومى'] || 'غير متوفر'}</span>
-                            </div>
-                            <div class="flex justify-between border-b border-blue-100 pb-2">
-                                <span class="text-slate-600">البريد الإلكتروني:</span>
-                                <span class="font-bold ${user['البريد'] ? 'text-blue-600' : 'text-red-500'}">
-                                    ${user['البريد'] || 'غير مسجل'}
-                                </span>
-                            </div>
-                            <div class="flex justify-between border-b border-blue-100 pb-2">
-                                <span class="text-slate-600">تاريخ الميلاد:</span>
-                                <span class="font-bold">${user['تاريخ الميلاد'] || 'غير متوفر'}</span>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="bg-slate-50 rounded-xl p-5">
-                        <div class="flex items-center mb-4">
-                            <i class="fas fa-info-circle text-blue-600 text-2xl mr-3"></i>
-                            <h3 class="text-xl font-bold">معلومات إضافية</h3>
-                        </div>
-                        <div class="space-y-3">
-                            <div class="flex justify-between border-b border-slate-200 pb-2">
-                                <span class="text-slate-600">المحافظة:</span>
-                                <span class="font-bold">${user['المحافظة'] || 'غير متوفر'}</span>
-                            </div>
-                            <div class="flex justify-between border-b border-slate-200 pb-2">
-                                <span class="text-slate-600">العنوان:</span>
-                                <span class="font-bold">${user['العنوان'] || 'غير متوفر'}</span>
-                            </div>
-                            <div class="flex justify-between border-b border-slate-200 pb-2">
-                                <span class="text-slate-600">الهاتف:</span>
-                                <span class="font-bold">${user['الهاتف'] || 'غير متوفر'}</span>
-                            </div>
-                            <div class="flex justify-between border-b border-slate-200 pb-2">
-                                <span class="text-slate-600">الوظيفة:</span>
-                                <span class="font-bold">${user['الوظيفة'] || 'غير متوفر'}</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="mt-6 text-center text-green-600 bg-green-50 py-3 rounded-lg">
-                    <i class="fas fa-check-circle mr-2"></i>
-                    تم تحديث البريد الإلكتروني بنجاح
+                    `;
+                }
+            });
+            
+            // إضافة فاصل بين الحقول الرئيسية والثانوية
+            userHtml += `
+                <div class="py-3 px-4 bg-slate-50">
+                    <h3 class="font-bold text-blue-700">معلومات إضافية</h3>
                 </div>
             `;
+            
+            // عرض الحقول الثانوية
+            additionalFields.forEach(key => {
+                if (user[key]) {
+                    userHtml += `
+                        <div class="info-item">
+                            <div class="info-label">${key}</div>
+                            <div class="info-value">${user[key]}</div>
+                        </div>
+                    `;
+                }
+            });
             
             document.getElementById('user-data').innerHTML = userHtml;
         }
