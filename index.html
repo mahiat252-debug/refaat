@@ -1,81 +1,759 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <title>تسجيل الدخول عبر Supabase</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- Supabase JS library -->
+  <title>نظام تسجيل الدخول باستخدام Supabase</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js/dist/umd/supabase.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    body { font-family: Tahoma, Arial, sans-serif; direction: rtl; margin: 40px; background: #f2f2f2; }
-    form, #user-info { background: #fff; padding: 24px; border-radius: 8px; box-shadow: 0 4px 12px #0001; max-width: 320px; margin: auto; margin-bottom: 20px; }
-    h2 { margin-top: 0; }
-    input { width: 100%; margin-bottom: 8px; padding: 8px; font-size: 1em; }
-    button { width: 100%; padding: 10px; background: #0080ff; color: #fff; border: none; border-radius: 4px; font-size: 1em; cursor: pointer; margin-top: 8px;}
-    button:hover { background: #005bbb; }
-    #user-info { text-align: center; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    body {
+      background: linear-gradient(135deg, #1a2a6c, #4a148c);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      color: #333;
+      direction: rtl;
+    }
+    
+    .container {
+      width: 100%;
+      max-width: 450px;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 20px;
+      box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3);
+      overflow: hidden;
+      position: relative;
+    }
+    
+    .header {
+      background: linear-gradient(135deg, #2c3e50, #1a2a6c);
+      color: white;
+      padding: 35px 30px;
+      text-align: center;
+      position: relative;
+    }
+    
+    .header::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0,0 L100,100 L0,100 Z" fill="rgba(255,255,255,0.1)"/></svg>');
+      background-size: cover;
+    }
+    
+    .header h1 {
+      font-weight: 700;
+      font-size: 32px;
+      margin-bottom: 10px;
+      position: relative;
+      z-index: 2;
+    }
+    
+    .header p {
+      opacity: 0.85;
+      font-size: 18px;
+      position: relative;
+      z-index: 2;
+    }
+    
+    .tabs {
+      display: flex;
+      background: #f0f2f5;
+      border-bottom: 1px solid #ddd;
+    }
+    
+    .tab {
+      flex: 1;
+      text-align: center;
+      padding: 18px 0;
+      font-size: 18px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .tab.active {
+      background: #fff;
+      color: #1a73e8;
+      border-bottom: 3px solid #1a73e8;
+    }
+    
+    .content {
+      padding: 35px;
+      position: relative;
+    }
+    
+    .form-container {
+      display: none;
+    }
+    
+    .form-container.active {
+      display: block;
+    }
+    
+    .form-group {
+      margin-bottom: 25px;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 10px;
+      font-weight: 600;
+      color: #2c3e50;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .input-container {
+      position: relative;
+    }
+    
+    .input-container i {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #7f8c8d;
+    }
+    
+    .form-group input {
+      width: 100%;
+      padding: 16px 16px 16px 50px;
+      border: 1px solid #bdc3c7;
+      border-radius: 12px;
+      font-size: 18px;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      text-align: right;
+    }
+    
+    .form-group input:focus {
+      border-color: #3498db;
+      box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+      outline: none;
+    }
+    
+    .submit-btn {
+      width: 100%;
+      padding: 18px;
+      background: linear-gradient(135deg, #3498db, #1a2a6c);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 20px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 10px;
+      box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .submit-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(52, 152, 219, 0.6);
+    }
+    
+    .submit-btn:active {
+      transform: translateY(1px);
+    }
+    
+    .result {
+      font-size: 18px;
+      text-align: center;
+      margin-top: 30px;
+      padding: 20px;
+      border-radius: 12px;
+      display: none;
+    }
+    
+    .success {
+      background: #e6f7ee;
+      color: #27ae60;
+      border: 1px solid #2ecc71;
+      text-align: right;
+    }
+    
+    .error {
+      background: #fdecea;
+      color: #e74c3c;
+      border: 1px solid #e74c3c;
+    }
+    
+    .loading {
+      display: none;
+      text-align: center;
+      padding: 20px;
+    }
+    
+    .loading-spinner {
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #3498db;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 15px;
+    }
+    
+    .user-card {
+      background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+      border-radius: 15px;
+      padding: 25px;
+      margin-top: 25px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      text-align: right;
+      display: none;
+    }
+    
+    .user-card h3 {
+      color: #1a2a6c;
+      margin-bottom: 20px;
+      font-size: 24px;
+      border-bottom: 2px solid #90caf9;
+      padding-bottom: 10px;
+    }
+    
+    .user-detail {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 1px dashed #90caf9;
+    }
+    
+    .user-detail:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+    }
+    
+    .detail-label {
+      font-weight: 600;
+      color: #1a2a6c;
+    }
+    
+    .detail-value {
+      color: #0d47a1;
+    }
+    
+    .security-info {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      color: #7f8c8d;
+      font-size: 14px;
+      margin-top: 25px;
+      padding: 12px;
+      border-radius: 8px;
+      background: #f8f9fa;
+      border: 1px solid #e8eaed;
+    }
+    
+    .security-info i {
+      color: #27ae60;
+    }
+    
+    .forgot-password {
+      text-align: left;
+      margin-top: 10px;
+    }
+    
+    .forgot-password a {
+      color: #3498db;
+      text-decoration: none;
+      font-size: 15px;
+    }
+    
+    .forgot-password a:hover {
+      text-decoration: underline;
+    }
+    
+    .social-login {
+      margin-top: 25px;
+      text-align: center;
+    }
+    
+    .social-login p {
+      position: relative;
+      margin-bottom: 20px;
+      color: #7f8c8d;
+    }
+    
+    .social-login p::before,
+    .social-login p::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      width: 30%;
+      height: 1px;
+      background: #ddd;
+    }
+    
+    .social-login p::before {
+      left: 0;
+    }
+    
+    .social-login p::after {
+      right: 0;
+    }
+    
+    .social-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+    }
+    
+    .social-btn {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      color: white;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .social-btn:hover {
+      transform: translateY(-3px);
+    }
+    
+    .google-btn {
+      background: #DB4437;
+    }
+    
+    .facebook-btn {
+      background: #4267B2;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    @media (max-width: 480px) {
+      .header {
+        padding: 30px 20px;
+      }
+      
+      .header h1 {
+        font-size: 28px;
+      }
+      
+      .content {
+        padding: 25px 20px;
+      }
+      
+      .form-group input {
+        font-size: 16px;
+        padding: 14px 14px 14px 45px;
+      }
+      
+      .submit-btn {
+        font-size: 18px;
+        padding: 16px;
+      }
+    }
   </style>
 </head>
 <body>
-  <form id="signup-form">
-    <h2>إنشاء حساب</h2>
-    <input type="email" id="signup-email" placeholder="البريد الإلكتروني" required>
-    <input type="password" id="signup-password" placeholder="كلمة المرور" required>
-    <button type="submit">تسجيل</button>
-  </form>
-
-  <form id="login-form">
-    <h2>تسجيل الدخول</h2>
-    <input type="email" id="login-email" placeholder="البريد الإلكتروني" required>
-    <input type="password" id="login-password" placeholder="كلمة المرور" required>
-    <button type="submit">دخول</button>
-  </form>
-
-  <div id="user-info" style="display:none;">
-    مرحباً، <span id="user-email"></span>!
-    <button id="logout-btn">تسجيل الخروج</button>
+  <div class="container">
+    <div class="header">
+      <h1><i class="fas fa-user-shield"></i> نظام تسجيل الدخول</h1>
+      <p>باستخدام Supabase</p>
+    </div>
+    
+    <div class="tabs">
+      <div class="tab active" data-tab="login">تسجيل الدخول</div>
+      <div class="tab" data-tab="signup">إنشاء حساب</div>
+    </div>
+    
+    <div class="content">
+      <!-- تسجيل الدخول -->
+      <div id="login-form" class="form-container active">
+        <div class="form-group">
+          <label for="login-email">
+            <i class="fas fa-envelope"></i> البريد الإلكتروني
+          </label>
+          <div class="input-container">
+            <i class="fas fa-at"></i>
+            <input type="email" id="login-email" placeholder="أدخل بريدك الإلكتروني">
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="login-password">
+            <i class="fas fa-lock"></i> كلمة المرور
+          </label>
+          <div class="input-container">
+            <i class="fas fa-key"></i>
+            <input type="password" id="login-password" placeholder="أدخل كلمة المرور">
+          </div>
+        </div>
+        
+        <div class="forgot-password">
+          <a href="#" id="forgot-password-link">نسيت كلمة المرور؟</a>
+        </div>
+        
+        <button class="submit-btn" id="login-btn">
+          <i class="fas fa-sign-in-alt"></i> تسجيل الدخول
+        </button>
+        
+        <div class="social-login">
+          <p>أو الدخول باستخدام</p>
+          <div class="social-buttons">
+            <div class="social-btn google-btn" id="google-login">
+              <i class="fab fa-google"></i>
+            </div>
+            <div class="social-btn facebook-btn" id="facebook-login">
+              <i class="fab fa-facebook-f"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- إنشاء حساب -->
+      <div id="signup-form" class="form-container">
+        <div class="form-group">
+          <label for="signup-email">
+            <i class="fas fa-envelope"></i> البريد الإلكتروني
+          </label>
+          <div class="input-container">
+            <i class="fas fa-at"></i>
+            <input type="email" id="signup-email" placeholder="أدخل بريدك الإلكتروني">
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="signup-password">
+            <i class="fas fa-lock"></i> كلمة المرور
+          </label>
+          <div class="input-container">
+            <i class="fas fa-key"></i>
+            <input type="password" id="signup-password" placeholder="أنشئ كلمة مرور قوية">
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="confirm-password">
+            <i class="fas fa-lock"></i> تأكيد كلمة المرور
+          </label>
+          <div class="input-container">
+            <i class="fas fa-key"></i>
+            <input type="password" id="confirm-password" placeholder="أعد إدخال كلمة المرور">
+          </div>
+        </div>
+        
+        <button class="submit-btn" id="signup-btn">
+          <i class="fas fa-user-plus"></i> إنشاء حساب
+        </button>
+      </div>
+      
+      <!-- النتائج والتحميل -->
+      <div id="loading" class="loading">
+        <div class="loading-spinner"></div>
+        جاري معالجة طلبك...
+      </div>
+      
+      <div id="result" class="result"></div>
+      
+      <!-- معلومات المستخدم بعد تسجيل الدخول -->
+      <div id="user-info" class="user-card">
+        <h3><i class="fas fa-user-circle"></i> معلومات حسابك</h3>
+        <div class="user-detail">
+          <span class="detail-label">البريد الإلكتروني:</span>
+          <span class="detail-value" id="user-email"></span>
+        </div>
+        <div class="user-detail">
+          <span class="detail-label">حالة الحساب:</span>
+          <span class="detail-value" id="user-status">نشط</span>
+        </div>
+        <div class="user-detail">
+          <span class="detail-label">آخر دخول:</span>
+          <span class="detail-value" id="last-login">الآن</span>
+        </div>
+        
+        <button class="submit-btn" id="logout-btn" style="margin-top: 20px;">
+          <i class="fas fa-sign-out-alt"></i> تسجيل الخروج
+        </button>
+      </div>
+      
+      <div class="security-info">
+        <i class="fas fa-lock"></i>
+        جميع بياناتك محمية بتقنيات التشفير المتقدمة
+      </div>
+    </div>
   </div>
 
   <script>
+    // تهيئة Supabase
     const SUPABASE_URL = 'https://xyzvarxxgtcemblzfgob.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh5enZhcnh4Z3RjZW1ibHpmZ29iIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ1MDQxNjMsImV4cCI6MjA3MDA4MDE2M30.PHAQJWq59GPdDkZ7ogA8INPETKviTPRf8zMJOfzlaJE';
     const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-    // Sign Up
-    document.getElementById('signup-form').addEventListener('submit', async function(e) {
+    
+    // عناصر الواجهة
+    const loginForm = document.getElementById('login-form');
+    const signupForm = document.getElementById('signup-form');
+    const loginBtn = document.getElementById('login-btn');
+    const signupBtn = document.getElementById('signup-btn');
+    const logoutBtn = document.getElementById('logout-btn');
+    const forgotPasswordLink = document.getElementById('forgot-password-link');
+    const tabs = document.querySelectorAll('.tab');
+    const resultDiv = document.getElementById('result');
+    const loadingDiv = document.getElementById('loading');
+    const userInfoDiv = document.getElementById('user-info');
+    const userEmailSpan = document.getElementById('user-email');
+    
+    // إدارة التبويبات
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        // إزالة النشاط من جميع التبويبات
+        tabs.forEach(t => t.classList.remove('active'));
+        // إضافة النشاط للتبويب المحدد
+        tab.classList.add('active');
+        
+        // إظهار الفورم المناسب
+        const tabId = tab.getAttribute('data-tab');
+        document.querySelectorAll('.form-container').forEach(form => {
+          form.classList.remove('active');
+        });
+        document.getElementById(`${tabId}-form`).classList.add('active');
+      });
+    });
+    
+    // تسجيل الدخول
+    loginBtn.addEventListener('click', async function(e) {
       e.preventDefault();
-      const email = document.getElementById('signup-email').value;
-      const password = document.getElementById('signup-password').value;
-      const { data, error } = await supabase.auth.signUp({ email, password });
-      if (error) {
-        alert('خطأ في التسجيل: ' + error.message);
-      } else {
-        alert('تم التسجيل! تحقق من بريدك الإلكتروني لتفعيل الحساب.');
+      const email = document.getElementById('login-email').value.trim();
+      const password = document.getElementById('login-password').value.trim();
+      
+      // التحقق من صحة المدخلات
+      if (!email || !password) {
+        showResult('error', 'يرجى ملء جميع الحقول المطلوبة');
+        return;
+      }
+      
+      // إظهار مؤشر التحميل
+      showLoading(true);
+      
+      try {
+        const { data, error } = await supabase.auth.signInWithPassword({ 
+          email, 
+          password 
+        });
+        
+        if (error) {
+          throw error;
+        }
+        
+        // تسجيل الدخول الناجح
+        showUserInfo(data.user.email);
+        showResult('success', 'تم تسجيل الدخول بنجاح!');
+      } catch (error) {
+        showResult('error', `خطأ في تسجيل الدخول: ${error.message}`);
+      } finally {
+        showLoading(false);
       }
     });
-
-    // Log In
-    document.getElementById('login-form').addEventListener('submit', async function(e) {
+    
+    // إنشاء حساب
+    signupBtn.addEventListener('click', async function(e) {
       e.preventDefault();
-      const email = document.getElementById('login-email').value;
-      const password = document.getElementById('login-password').value;
-      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-      if (error) {
-        alert('خطأ في تسجيل الدخول: ' + error.message);
-      } else {
-        document.getElementById('user-email').textContent = data.user.email;
-        document.getElementById('user-info').style.display = 'block';
-        document.getElementById('login-form').style.display = 'none';
-        document.getElementById('signup-form').style.display = 'none';
+      const email = document.getElementById('signup-email').value.trim();
+      const password = document.getElementById('signup-password').value.trim();
+      const confirmPassword = document.getElementById('confirm-password').value.trim();
+      
+      // التحقق من صحة المدخلات
+      if (!email || !password || !confirmPassword) {
+        showResult('error', 'يرجى ملء جميع الحقول المطلوبة');
+        return;
+      }
+      
+      if (password !== confirmPassword) {
+        showResult('error', 'كلمتا المرور غير متطابقتين');
+        return;
+      }
+      
+      if (password.length < 6) {
+        showResult('error', 'كلمة المرور يجب أن تكون 6 أحرف على الأقل');
+        return;
+      }
+      
+      // إظهار مؤشر التحميل
+      showLoading(true);
+      
+      try {
+        const { data, error } = await supabase.auth.signUp({ 
+          email, 
+          password 
+        });
+        
+        if (error) {
+          throw error;
+        }
+        
+        // إنشاء الحساب الناجح
+        showResult('success', 'تم إنشاء الحساب بنجاح! تحقق من بريدك الإلكتروني لتفعيل الحساب.');
+        document.getElementById('signup-form').reset();
+        
+        // التبديل إلى تبويب تسجيل الدخول
+        tabs[0].click();
+      } catch (error) {
+        showResult('error', `خطأ في إنشاء الحساب: ${error.message}`);
+      } finally {
+        showLoading(false);
       }
     });
-
-    // Log Out
-    document.getElementById('logout-btn').addEventListener('click', async function() {
-      await supabase.auth.signOut();
-      document.getElementById('user-info').style.display = 'none';
-      document.getElementById('login-form').style.display = 'block';
-      document.getElementById('signup-form').style.display = 'block';
+    
+    // تسجيل الخروج
+    logoutBtn.addEventListener('click', async function() {
+      showLoading(true);
+      
+      try {
+        const { error } = await supabase.auth.signOut();
+        
+        if (error) {
+          throw error;
+        }
+        
+        // إخفاء معلومات المستخدم
+        userInfoDiv.style.display = 'none';
+        loginForm.classList.add('active');
+        showResult('success', 'تم تسجيل الخروج بنجاح');
+      } catch (error) {
+        showResult('error', `خطأ في تسجيل الخروج: ${error.message}`);
+      } finally {
+        showLoading(false);
+      }
+    });
+    
+    // نسيت كلمة المرور
+    forgotPasswordLink.addEventListener('click', async function(e) {
+      e.preventDefault();
+      const email = document.getElementById('login-email').value.trim();
+      
+      if (!email) {
+        showResult('error', 'يرجى إدخال بريدك الإلكتروني');
+        return;
+      }
+      
+      showLoading(true);
+      
+      try {
+        const { error } = await supabase.auth.resetPasswordForEmail(email);
+        
+        if (error) {
+          throw error;
+        }
+        
+        showResult('success', 'تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك الإلكتروني');
+      } catch (error) {
+        showResult('error', `خطأ في إرسال رابط إعادة التعيين: ${error.message}`);
+      } finally {
+        showLoading(false);
+      }
+    });
+    
+    // تسجيل الدخول باستخدام جوجل
+    document.getElementById('google-login').addEventListener('click', async function() {
+      showLoading(true);
+      
+      try {
+        const { error } = await supabase.auth.signInWithOAuth({
+          provider: 'google',
+          options: {
+            redirectTo: window.location.href
+          }
+        });
+        
+        if (error) {
+          throw error;
+        }
+      } catch (error) {
+        showResult('error', `خطأ في تسجيل الدخول عبر جوجل: ${error.message}`);
+        showLoading(false);
+      }
+    });
+    
+    // تسجيل الدخول باستخدام فيسبوك
+    document.getElementById('facebook-login').addEventListener('click', async function() {
+      showLoading(true);
+      
+      try {
+        const { error } = await supabase.auth.signInWithOAuth({
+          provider: 'facebook',
+          options: {
+            redirectTo: window.location.href
+          }
+        });
+        
+        if (error) {
+          throw error;
+        }
+      } catch (error) {
+        showResult('error', `خطأ في تسجيل الدخول عبر فيسبوك: ${error.message}`);
+        showLoading(false);
+      }
+    });
+    
+    // التحقق من حالة تسجيل الدخول عند التحميل
+    async function checkAuthState() {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (user) {
+        showUserInfo(user.email);
+      }
+    }
+    
+    // عرض معلومات المستخدم
+    function showUserInfo(email) {
+      userEmailSpan.textContent = email;
+      userInfoDiv.style.display = 'block';
+      loginForm.classList.remove('active');
+      signupForm.classList.remove('active');
+    }
+    
+    // عرض نتيجة العملية
+    function showResult(type, message) {
+      resultDiv.textContent = message;
+      resultDiv.className = `result ${type}`;
+      resultDiv.style.display = 'block';
+      
+      // إخفاء الرسالة بعد 5 ثواني
+      setTimeout(() => {
+        resultDiv.style.display = 'none';
+      }, 5000);
+    }
+    
+    // عرض/إخفاء مؤشر التحميل
+    function showLoading(show) {
+      loadingDiv.style.display = show ? 'block' : 'none';
+    }
+    
+    // تهيئة الصفحة عند التحميل
+    document.addEventListener('DOMContentLoaded', function() {
+      checkAuthState();
     });
   </script>
 </body>
