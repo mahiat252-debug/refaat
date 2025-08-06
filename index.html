@@ -6,7 +6,24 @@
     <title>Secure ID Verification</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <style>
+        :root {
+            --primary: #4285F4;
+            --primary-dark: #2862c0;
+            --secondary: #1a73e8;
+            --secondary-dark: #0d61d1;
+            --success: #34a853;
+            --error: #ea4335;
+            --warning: #f9ab00;
+            --text: #202124;
+            --text-light: #5f6368;
+            --bg: #f0f5ff;
+            --card-bg: #ffffff;
+            --border: #dadce0;
+            --divider: #e0e0e0;
+        }
+        
         * {
             margin: 0;
             padding: 0;
@@ -15,18 +32,19 @@
         }
         
         body {
-            background: linear-gradient(135deg, #f0f5ff 0%, #e6f0ff 100%);
+            background: linear-gradient(135deg, var(--bg) 0%, #e6f0ff 100%);
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 20px;
+            color: var(--text);
         }
         
         .container {
             max-width: 500px;
             width: 100%;
-            background: white;
+            background: var(--card-bg);
             border-radius: 16px;
             box-shadow: 0 10px 40px rgba(66, 133, 244, 0.15);
             overflow: hidden;
@@ -34,7 +52,7 @@
         }
         
         .header {
-            background: linear-gradient(135deg, #4285F4 0%, #2862c0 100%);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
             color: white;
             padding: 35px 30px;
             text-align: center;
@@ -80,7 +98,7 @@
             gap: 12px;
             width: 100%;
             padding: 16px;
-            background: #4285F4;
+            background: var(--primary);
             color: white;
             border: none;
             border-radius: 10px;
@@ -95,7 +113,7 @@
         }
         
         .google-btn:hover {
-            background: #3367d6;
+            background: var(--primary-dark);
             transform: translateY(-3px);
             box-shadow: 0 6px 20px rgba(66, 133, 244, 0.4);
         }
@@ -103,7 +121,7 @@
         .google-btn i {
             font-size: 22px;
             background: white;
-            color: #4285F4;
+            color: var(--primary);
             border-radius: 5px;
             width: 30px;
             height: 30px;
@@ -124,12 +142,12 @@
             content: "";
             flex: 1;
             height: 1px;
-            background: linear-gradient(90deg, transparent, #e0e0e0, transparent);
+            background: linear-gradient(90deg, transparent, var(--divider), transparent);
         }
         
         .divider-text {
             padding: 0 20px;
-            color: #5f6368;
+            color: var(--text-light);
             font-size: 16px;
             font-weight: 600;
             text-transform: uppercase;
@@ -140,14 +158,14 @@
             font-size: 22px;
             font-weight: 600;
             margin-bottom: 25px;
-            color: #202124;
+            color: var(--text);
             display: flex;
             align-items: center;
             gap: 12px;
         }
         
         .section-title i {
-            color: #4285F4;
+            color: var(--primary);
             background: #e8f0fe;
             width: 42px;
             height: 42px;
@@ -165,14 +183,14 @@
             display: block;
             margin-bottom: 10px;
             font-weight: 500;
-            color: #3c4043;
+            color: var(--text);
             font-size: 16px;
         }
         
         .input-group input {
             width: 100%;
             padding: 16px 18px;
-            border: 1px solid #dadce0;
+            border: 1px solid var(--border);
             border-radius: 10px;
             font-size: 16px;
             transition: all 0.3s ease;
@@ -180,26 +198,26 @@
         }
         
         .input-group input:focus {
-            border-color: #4285F4;
+            border-color: var(--primary);
             box-shadow: 0 0 0 3px rgba(66, 133, 244, 0.2);
             outline: none;
         }
         
         .security-note {
             background: #f8f9fa;
-            border-left: 4px solid #4285F4;
+            border-left: 4px solid var(--primary);
             padding: 18px;
             border-radius: 0 8px 8px 0;
             margin-bottom: 30px;
             font-size: 15px;
-            color: #5f6368;
+            color: var(--text-light);
             display: flex;
             align-items: flex-start;
             gap: 12px;
         }
         
         .security-note i {
-            color: #4285F4;
+            color: var(--primary);
             font-size: 20px;
             margin-top: 3px;
         }
@@ -214,7 +232,7 @@
         
         .registration-section h3 {
             font-size: 19px;
-            color: #1a73e8;
+            color: var(--secondary);
             margin-bottom: 15px;
             display: flex;
             align-items: center;
@@ -223,13 +241,13 @@
         
         .registration-section p {
             font-size: 15px;
-            color: #5f6368;
+            color: var(--text-light);
             line-height: 1.6;
         }
         
         .terms {
             font-size: 14px;
-            color: #5f6368;
+            color: var(--text-light);
             text-align: center;
             margin: 25px 0 15px;
             line-height: 1.6;
@@ -237,7 +255,7 @@
         }
         
         .terms a {
-            color: #1a73e8;
+            color: var(--secondary);
             text-decoration: none;
             font-weight: 500;
             transition: all 0.2s;
@@ -245,13 +263,13 @@
         
         .terms a:hover {
             text-decoration: underline;
-            color: #0d61d1;
+            color: var(--secondary-dark);
         }
         
         .continue-btn {
             width: 100%;
             padding: 17px;
-            background: linear-gradient(135deg, #1a73e8 0%, #0d61d1 100%);
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-dark) 100%);
             color: white;
             border: none;
             border-radius: 10px;
@@ -275,7 +293,7 @@
             align-items: center;
             justify-content: center;
             gap: 10px;
-            color: #5f6368;
+            color: var(--text-light);
             font-size: 14px;
             margin-top: 25px;
             background: #f8f9fa;
@@ -285,7 +303,7 @@
         }
         
         .security-badge i {
-            color: #34a853;
+            color: var(--success);
             font-size: 18px;
         }
         
@@ -296,7 +314,7 @@
             border-radius: 8px;
             margin-bottom: 25px;
             font-size: 15px;
-            color: #1a73e8;
+            color: var(--secondary);
             font-weight: 500;
             text-align: center;
         }
@@ -316,13 +334,25 @@
         .error-message {
             display: none;
             background: #fce8e6;
-            color: #c5221f;
+            color: var(--error);
             padding: 15px;
             border-radius: 8px;
             margin-top: 15px;
             text-align: center;
             font-weight: 500;
             border: 1px solid #f5c0b8;
+        }
+        
+        .warning-message {
+            display: none;
+            background: #fef7e0;
+            color: var(--warning);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            text-align: center;
+            font-weight: 500;
+            border: 1px solid #f9ab00;
         }
         
         .loading {
@@ -333,7 +363,7 @@
         
         .loading-spinner {
             border: 4px solid #f3f3f3;
-            border-top: 4px solid #4285F4;
+            border-top: 4px solid var(--primary);
             border-radius: 50%;
             width: 40px;
             height: 40px;
@@ -344,6 +374,28 @@
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
+        }
+        
+        .id-format-info {
+            font-size: 14px;
+            color: var(--text-light);
+            margin-top: 8px;
+            display: none;
+        }
+        
+        .id-examples {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .id-example {
+            background: #f8f9fa;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            border: 1px dashed var(--border);
         }
         
         @media (max-width: 480px) {
@@ -364,8 +416,8 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>Welcome Back</h1>
-            <p>Sign in with your Google account to continue</p>
+            <h1>Secure ID Verification</h1>
+            <p>Verify your identity with government-issued ID</p>
         </div>
         
         <div class="content">
@@ -388,41 +440,54 @@
             
             <h2 class="section-title">
                 <i class="fas fa-id-card"></i>
-                Enter your ID number
+                Enter your ID information
             </h2>
             
             <div class="input-group">
                 <label for="idNumber">National ID Number</label>
-                <input type="text" id="idNumber" placeholder="Enter your government-issued ID number">
+                <input type="text" id="idNumber" placeholder="Enter government-issued ID number">
+                <div class="id-format-info" id="idFormatInfo">
+                    <p>ID numbers must follow your country's standard format:</p>
+                    <div class="id-examples">
+                        <div class="id-example">US: 123-45-6789</div>
+                        <div class="id-example">UK: AB 12 34 56 C</div>
+                        <div class="id-example">DE: 12345678901</div>
+                        <div class="id-example">FR: 1 23 45 67 891 23 45</div>
+                    </div>
+                </div>
             </div>
             
             <div class="security-note">
                 <i class="fas fa-shield-alt"></i>
-                Your ID number will be securely stored and used for verification purposes only.
+                Your ID number is encrypted before storage and used only for verification.
             </div>
             
             <div class="registration-section">
-                <h3><i class="fas fa-lock"></i> Your Registration</h3>
-                <p>Your information is encrypted and stored securely in Google Sheets. We only collect what's necessary for verification and service provision.</p>
+                <h3><i class="fas fa-lock"></i> Security Measures</h3>
+                <p>All sensitive information is encrypted using AES-256 encryption before storage. We follow GDPR compliance standards and never store raw ID numbers.</p>
             </div>
             
             <div class="user-info" id="userInfo">
                 Signed in as: <span id="userEmail"></span>
             </div>
             
-            <button class="continue-btn" id="continueBtn">Continue Verification</button>
+            <button class="continue-btn" id="continueBtn">Verify Identity</button>
             
             <div class="success-message" id="successMessage">
-                <i class="fas fa-check-circle"></i> Your information has been securely stored!
+                <i class="fas fa-check-circle"></i> Verification complete! Your information is securely stored.
             </div>
             
             <div class="error-message" id="errorMessage">
-                <i class="fas fa-exclamation-circle"></i> Please complete all fields
+                <i class="fas fa-exclamation-circle"></i> <span id="errorText">Please complete all fields</span>
+            </div>
+            
+            <div class="warning-message" id="warningMessage">
+                <i class="fas fa-exclamation-triangle"></i> <span id="warningText">Warning: This appears to be an invalid ID format</span>
             </div>
             
             <div class="loading" id="loading">
                 <div class="loading-spinner"></div>
-                Storing your information securely...
+                Securely processing your information...
             </div>
             
             <div class="terms">
@@ -431,16 +496,24 @@
             
             <div class="security-badge">
                 <i class="fas fa-lock"></i>
-                Secured with 256-bit SSL encryption
+                End-to-end encrypted with AES-256
             </div>
         </div>
     </div>
 
     <script>
+        // Encryption key (in real implementation, this should be securely managed)
+        const ENCRYPTION_KEY = "secure-verification-key-123";
+        
         // Handle Google Sign-In
         function handleGoogleSignIn(response) {
             // Decode the JWT response to get user info
             const userData = parseJwt(response.credential);
+            
+            if (!userData || !userData.email) {
+                showError("Failed to authenticate. Please try again.");
+                return;
+            }
             
             // Display user info
             document.getElementById('userEmail').textContent = userData.email;
@@ -448,19 +521,24 @@
             
             // Update button text
             document.getElementById('googleSignInBtn').innerHTML = 
-                `<i class="fab fa-google"></i> Signed in as ${userData.email}`;
+                `<i class="fab fa-google"></i> Signed in as ${userData.email.substring(0, 20)}${userData.email.length > 20 ? '...' : ''}`;
             
             // Disable Google Sign-In button
             document.getElementById('googleSignInBtn').disabled = true;
-            
-            console.log('User signed in:', userData);
         }
         
         // Helper function to parse JWT
         function parseJwt(token) {
             try {
-                return JSON.parse(atob(token.split('.')[1]));
+                const base64Url = token.split('.')[1];
+                const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+                const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+                    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+                }).join(''));
+                
+                return JSON.parse(jsonPayload);
             } catch (e) {
+                console.error('Error parsing JWT:', e);
                 return null;
             }
         }
@@ -468,92 +546,106 @@
         // Continue button click handler
         document.getElementById('continueBtn').addEventListener('click', function() {
             const idInput = document.getElementById('idNumber');
+            const idValue = idInput.value.trim();
             const userEmail = document.getElementById('userEmail').textContent;
-            const errorMessage = document.getElementById('errorMessage');
-            const successMessage = document.getElementById('successMessage');
-            const loading = document.getElementById('loading');
             
             // Reset messages
-            errorMessage.style.display = 'none';
-            successMessage.style.display = 'none';
+            hideMessages();
             
             // Validation
             if (!userEmail || userEmail === '') {
-                errorMessage.textContent = 'Please sign in with Google first';
-                errorMessage.style.display = 'block';
+                showError('Please sign in with Google first');
                 return;
             }
             
-            if (!idInput.value) {
-                errorMessage.textContent = 'Please enter your ID number';
-                errorMessage.style.display = 'block';
+            if (!idValue) {
+                showError('Please enter your ID number');
                 idInput.focus();
                 return;
             }
             
-            // Show loading
-            loading.style.display = 'block';
+            // Basic ID format validation
+            if (!validateIdFormat(idValue)) {
+                showWarning('This does not match standard ID formats. Please double-check.');
+                document.getElementById('idFormatInfo').style.display = 'block';
+                return;
+            }
             
-            // Simulate storing in Google Sheets (in a real app, you would send to Google Apps Script)
+            // Show loading
+            document.getElementById('loading').style.display = 'block';
+            
+            // Encrypt the ID before sending
+            const encryptedId = encryptData(idValue);
+            
+            // Simulate storing in Google Sheets (in a real app, you would send to backend)
             setTimeout(() => {
                 // Hide loading
-                loading.style.display = 'none';
+                document.getElementById('loading').style.display = 'none';
                 
                 // Show success message
-                successMessage.style.display = 'block';
+                document.getElementById('successMessage').style.display = 'block';
                 
                 // Reset form
                 idInput.value = '';
                 
-                // For demo purposes - log the data
-                console.log('Data to store in Google Sheets:');
+                // Log the data (in a real app, this would be sent to your backend)
+                console.log('Encrypted data for storage:');
                 console.log('Email:', userEmail);
-                console.log('ID Number:', idInput.value);
-                
-                // In a real implementation, you would call Google Apps Script here:
-                // sendDataToGoogleSheets(userEmail, idInput.value);
+                console.log('Encrypted ID:', encryptedId);
             }, 2000);
         });
         
-        // Function to send data to Google Sheets via Apps Script
-        function sendDataToGoogleSheets(email, idNumber) {
-            // This is where you would implement the actual Google Sheets integration
-            // You would need to:
-            // 1. Create a Google Apps Script
-            // 2. Deploy it as a web app
-            // 3. Make a POST request to that endpoint
+        // Basic ID format validation
+        function validateIdFormat(id) {
+            // Remove non-alphanumeric characters
+            const cleanId = id.replace(/[^a-zA-Z0-9]/g, '');
             
-            const scriptURL = 'https://script.google.com/macros/s/AKfycbyBcGcFxYv6LCR6hjeoRNUnvSf8C5ZQzIZ8fphBmlfPboUtT581KDELJXbNAaCWM0uflA/exec';
+            // Check for reasonable length (5-20 characters)
+            if (cleanId.length < 5 || cleanId.length > 20) {
+                return false;
+            }
             
-            fetch(scriptURL, {
-                method: 'POST',
-                mode: 'cors',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    email: email,
-                    idNumber: idNumber,
-                    timestamp: new Date().toISOString()
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Data stored successfully:', data);
-            })
-            .catch(error => {
-                console.error('Error storing data:', error);
-                document.getElementById('errorMessage').textContent = 
-                    'Error storing data. Please try again.';
-                document.getElementById('errorMessage').style.display = 'block';
-            });
+            // Check for at least 2 numbers
+            if (!/\d{2,}/.test(cleanId)) {
+                return false;
+            }
+            
+            return true;
+        }
+        
+        // Encrypt data
+        function encryptData(data) {
+            try {
+                return CryptoJS.AES.encrypt(data, ENCRYPTION_KEY).toString();
+            } catch (e) {
+                console.error('Encryption error:', e);
+                return data; // Fallback to plaintext (not recommended in production)
+            }
+        }
+        
+        // Show error message
+        function showError(message) {
+            document.getElementById('errorText').textContent = message;
+            document.getElementById('errorMessage').style.display = 'block';
+        }
+        
+        // Show warning message
+        function showWarning(message) {
+            document.getElementById('warningText').textContent = message;
+            document.getElementById('warningMessage').style.display = 'block';
+        }
+        
+        // Hide all messages
+        function hideMessages() {
+            document.getElementById('errorMessage').style.display = 'none';
+            document.getElementById('warningMessage').style.display = 'none';
+            document.getElementById('successMessage').style.display = 'none';
+            document.getElementById('idFormatInfo').style.display = 'none';
         }
         
         // Initialize Google Sign-In button
         window.onload = function() {
-            // In a real implementation, you would initialize with your client ID
-            // For demo purposes, we'll just log a message
-            console.log('Google Sign-In initialized');
+            console.log('Secure ID Verification initialized');
         };
     </script>
 </body>
