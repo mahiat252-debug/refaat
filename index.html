@@ -468,7 +468,7 @@
                 currentUser["البريد"] = email;
                 
                 // في التطبيق الحقيقي، هنا سيتم تحديث قاعدة البيانات
-                // للمثال، سنقوم بتحديث المصفوفة المحلية فقط
+           // للمثال، سنقوم بتحديث المصفوفة المحلية فقط
                 const index = usersData.findIndex(u => u["الرقم القومى"] === currentUser["الرقم القومى"]);
                 if (index !== -1) {
                     usersData[index] = currentUser;
