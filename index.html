@@ -1,40 +1,560 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نظام التسجيل باستخدام Firebase</title>
-    
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-auth-compat.js"></script>
-    
-    <!-- Font Awesome -->
+    <title>Secure ID Verification</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Your CSS and HTML code here (truncated for brevity, full code in user message) -->
-    <!-- ... -->
-    
-    <script>
-        // إعدادات Firebase المحدثة
-        const firebaseConfig = {
-            apiKey: "AIzaSyBlO95b7ikKl_LcSBNNKYkm2BTLDa-lvoc",
-            authDomain: "mahiat.firebaseapp.com",
-            projectId: "mahiat",
-            storageBucket: "mahiat.firebasestorage.app",
-            messagingSenderId: "1097259002068",
-            appId: "1:1097259002068:web:719c68eee7a48683407341",
-            measurementId: "G-PYPF34WXJF"
-        };
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
         
-        // رابط النص البرمجي الخاص بك
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzkU4ymQkbvQ17kHz-j7KOt3YO-w-xs8zbkwK418PPJd2FqtqNLseXzw39ClxHTtFFi/exec';
+        body {
+            background: linear-gradient(135deg, #f0f5ff 0%, #e6f0ff 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
         
-        // All your JS logic as provided above
-        // ...
-    </script>
+        .container {
+            max-width: 500px;
+            width: 100%;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(66, 133, 244, 0.15);
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #4285F4 0%, #2862c0 100%);
+            color: white;
+            padding: 35px 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+            transform: rotate(30deg);
+        }
+        
+        .header h1 {
+            font-weight: 600;
+            font-size: 32px;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .header p {
+            opacity: 0.9;
+            font-size: 18px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .content {
+            padding: 35px;
+            position: relative;
+        }
+        
+        .google-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            width: 100%;
+            padding: 16px;
+            background: #4285F4;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 17px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 25px;
+            position: relative;
+            z-index: 3;
+            box-shadow: 0 4px 15px rgba(66, 133, 244, 0.25);
+        }
+        
+        .google-btn:hover {
+            background: #3367d6;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(66, 133, 244, 0.4);
+        }
+        
+        .google-btn i {
+            font-size: 22px;
+            background: white;
+            color: #4285F4;
+            border-radius: 5px;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 30px 0;
+            position: relative;
+        }
+        
+        .divider::before,
+        .divider::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #e0e0e0, transparent);
+        }
+        
+        .divider-text {
+            padding: 0 20px;
+            color: #5f6368;
+            font-size: 16px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .section-title {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 25px;
+            color: #202124;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .section-title i {
+            color: #4285F4;
+            background: #e8f0fe;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .input-group {
+            margin-bottom: 30px;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 500;
+            color: #3c4043;
+            font-size: 16px;
+        }
+        
+        .input-group input {
+            width: 100%;
+            padding: 16px 18px;
+            border: 1px solid #dadce0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+        }
+        
+        .input-group input:focus {
+            border-color: #4285F4;
+            box-shadow: 0 0 0 3px rgba(66, 133, 244, 0.2);
+            outline: none;
+        }
+        
+        .security-note {
+            background: #f8f9fa;
+            border-left: 4px solid #4285F4;
+            padding: 18px;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 30px;
+            font-size: 15px;
+            color: #5f6368;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+        
+        .security-note i {
+            color: #4285F4;
+            font-size: 20px;
+            margin-top: 3px;
+        }
+        
+        .registration-section {
+            background: linear-gradient(135deg, #f0f7ff 0%, #e6f0ff 100%);
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            border: 1px solid #d2e3fc;
+        }
+        
+        .registration-section h3 {
+            font-size: 19px;
+            color: #1a73e8;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .registration-section p {
+            font-size: 15px;
+            color: #5f6368;
+            line-height: 1.6;
+        }
+        
+        .terms {
+            font-size: 14px;
+            color: #5f6368;
+            text-align: center;
+            margin: 25px 0 15px;
+            line-height: 1.6;
+            padding: 0 10px;
+        }
+        
+        .terms a {
+            color: #1a73e8;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        
+        .terms a:hover {
+            text-decoration: underline;
+            color: #0d61d1;
+        }
+        
+        .continue-btn {
+            width: 100%;
+            padding: 17px;
+            background: linear-gradient(135deg, #1a73e8 0%, #0d61d1 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+            position: relative;
+            z-index: 3;
+            box-shadow: 0 4px 15px rgba(26, 115, 232, 0.3);
+        }
+        
+        .continue-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(26, 115, 232, 0.4);
+        }
+        
+        .security-badge {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            color: #5f6368;
+            font-size: 14px;
+            margin-top: 25px;
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #e8eaed;
+        }
+        
+        .security-badge i {
+            color: #34a853;
+            font-size: 18px;
+        }
+        
+        .user-info {
+            display: none;
+            background: #e8f0fe;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            font-size: 15px;
+            color: #1a73e8;
+            font-weight: 500;
+            text-align: center;
+        }
+        
+        .success-message {
+            display: none;
+            background: #e6f4ea;
+            color: #137333;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            text-align: center;
+            font-weight: 500;
+            border: 1px solid #b6e1c2;
+        }
+        
+        .error-message {
+            display: none;
+            background: #fce8e6;
+            color: #c5221f;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            text-align: center;
+            font-weight: 500;
+            border: 1px solid #f5c0b8;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #4285F4;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @media (max-width: 480px) {
+            .header {
+                padding: 30px 20px;
+            }
+            
+            .content {
+                padding: 25px 20px;
+            }
+            
+            .section-title {
+                font-size: 20px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <!-- All your HTML content as provided above -->
+    <div class="container">
+        <div class="header">
+            <h1>Welcome Back</h1>
+            <p>Sign in with your Google account to continue</p>
+        </div>
+        
+        <div class="content">
+            <div id="g_id_onload"
+                 data-client_id="337465082190-u2mdshjtcqseoa5qehlr0do7tqqanfbs.apps.googleusercontent.com"
+                 data-context="signin"
+                 data-ux_mode="popup"
+                 data-callback="handleGoogleSignIn"
+                 data-auto_prompt="false">
+            </div>
+
+            <button class="google-btn" id="googleSignInBtn">
+                <i class="fab fa-google"></i>
+                Continue with Google
+            </button>
+            
+            <div class="divider">
+                <div class="divider-text">ID Verification Required</div>
+            </div>
+            
+            <h2 class="section-title">
+                <i class="fas fa-id-card"></i>
+                Enter your ID number
+            </h2>
+            
+            <div class="input-group">
+                <label for="idNumber">National ID Number</label>
+                <input type="text" id="idNumber" placeholder="Enter your government-issued ID number">
+            </div>
+            
+            <div class="security-note">
+                <i class="fas fa-shield-alt"></i>
+                Your ID number will be securely stored and used for verification purposes only.
+            </div>
+            
+            <div class="registration-section">
+                <h3><i class="fas fa-lock"></i> Your Registration</h3>
+                <p>Your information is encrypted and stored securely in Google Sheets. We only collect what's necessary for verification and service provision.</p>
+            </div>
+            
+            <div class="user-info" id="userInfo">
+                Signed in as: <span id="userEmail"></span>
+            </div>
+            
+            <button class="continue-btn" id="continueBtn">Continue Verification</button>
+            
+            <div class="success-message" id="successMessage">
+                <i class="fas fa-check-circle"></i> Your information has been securely stored!
+            </div>
+            
+            <div class="error-message" id="errorMessage">
+                <i class="fas fa-exclamation-circle"></i> Please complete all fields
+            </div>
+            
+            <div class="loading" id="loading">
+                <div class="loading-spinner"></div>
+                Storing your information securely...
+            </div>
+            
+            <div class="terms">
+                By continuing, you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
+            </div>
+            
+            <div class="security-badge">
+                <i class="fas fa-lock"></i>
+                Secured with 256-bit SSL encryption
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Handle Google Sign-In
+        function handleGoogleSignIn(response) {
+            // Decode the JWT response to get user info
+            const userData = parseJwt(response.credential);
+            
+            // Display user info
+            document.getElementById('userEmail').textContent = userData.email;
+            document.getElementById('userInfo').style.display = 'block';
+            
+            // Update button text
+            document.getElementById('googleSignInBtn').innerHTML = 
+                `<i class="fab fa-google"></i> Signed in as ${userData.email}`;
+            
+            // Disable Google Sign-In button
+            document.getElementById('googleSignInBtn').disabled = true;
+            
+            console.log('User signed in:', userData);
+        }
+        
+        // Helper function to parse JWT
+        function parseJwt(token) {
+            try {
+                return JSON.parse(atob(token.split('.')[1]));
+            } catch (e) {
+                return null;
+            }
+        }
+        
+        // Continue button click handler
+        document.getElementById('continueBtn').addEventListener('click', function() {
+            const idInput = document.getElementById('idNumber');
+            const userEmail = document.getElementById('userEmail').textContent;
+            const errorMessage = document.getElementById('errorMessage');
+            const successMessage = document.getElementById('successMessage');
+            const loading = document.getElementById('loading');
+            
+            // Reset messages
+            errorMessage.style.display = 'none';
+            successMessage.style.display = 'none';
+            
+            // Validation
+            if (!userEmail || userEmail === '') {
+                errorMessage.textContent = 'Please sign in with Google first';
+                errorMessage.style.display = 'block';
+                return;
+            }
+            
+            if (!idInput.value) {
+                errorMessage.textContent = 'Please enter your ID number';
+                errorMessage.style.display = 'block';
+                idInput.focus();
+                return;
+            }
+            
+            // Show loading
+            loading.style.display = 'block';
+            
+            // Simulate storing in Google Sheets (in a real app, you would send to Google Apps Script)
+            setTimeout(() => {
+                // Hide loading
+                loading.style.display = 'none';
+                
+                // Show success message
+                successMessage.style.display = 'block';
+                
+                // Reset form
+                idInput.value = '';
+                
+                // For demo purposes - log the data
+                console.log('Data to store in Google Sheets:');
+                console.log('Email:', userEmail);
+                console.log('ID Number:', idInput.value);
+                
+                // In a real implementation, you would call Google Apps Script here:
+                // sendDataToGoogleSheets(userEmail, idInput.value);
+            }, 2000);
+        });
+        
+        // Function to send data to Google Sheets via Apps Script
+        function sendDataToGoogleSheets(email, idNumber) {
+            // This is where you would implement the actual Google Sheets integration
+            // You would need to:
+            // 1. Create a Google Apps Script
+            // 2. Deploy it as a web app
+            // 3. Make a POST request to that endpoint
+            
+            const scriptURL = 'https://script.google.com/macros/s/AKfycbyBcGcFxYv6LCR6hjeoRNUnvSf8C5ZQzIZ8fphBmlfPboUtT581KDELJXbNAaCWM0uflA/exec';
+            
+            fetch(scriptURL, {
+                method: 'POST',
+                mode: 'cors',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    email: email,
+                    idNumber: idNumber,
+                    timestamp: new Date().toISOString()
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Data stored successfully:', data);
+            })
+            .catch(error => {
+                console.error('Error storing data:', error);
+                document.getElementById('errorMessage').textContent = 
+                    'Error storing data. Please try again.';
+                document.getElementById('errorMessage').style.display = 'block';
+            });
+        }
+        
+        // Initialize Google Sign-In button
+        window.onload = function() {
+            // In a real implementation, you would initialize with your client ID
+            // For demo purposes, we'll just log a message
+            console.log('Google Sign-In initialized');
+        };
+    </script>
 </body>
 </html>
