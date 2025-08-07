@@ -345,48 +345,88 @@
         const SHEET_URL = "https://opensheet.elk.sh/1IC_POuvxv9X2vE862HkoGlrvIIxnWgmJ4-jEMXRi0bk/Sheet1";
         
         // رابط تطبيق Google Apps Script لتحديث البريد
-        // استبدل هذا الرابط برابط النشر الخاص بك
-        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzlXzcdtA78RWd4GCd-sdl8oBOAeJn1fnWhT-GrcV1b0gOsbO_kTtgZWQPdpD2IhuhT4g/exec";
-          // بيانات المستخدمين
-    let usersData = [];
-    let currentUser = null;
-
-    // ===== NEW HELPER FUNCTION =====
-    function normalizeNationalId(id) {
-        // Remove any non-digit characters
-        let cleanId = id.replace(/\D/g, '');
+        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwmH52ROaa6ErcSlk39x-qN2-1Ohxw9kVbfj-cT9M-bLBZjyn2wf5PTjZbuuWqP-X_S/exec";
         
-        // Handle 13-digit case (missing leading zero)
-        if (cleanId.length === 13) {
-            cleanId = '0' + cleanId;
+        // بيانات المستخدمين
+        let usersData = [];
+        let currentUser = null;
+
+        // ===== دالة جديدة: تنظيف الرقم القومي =====
+        function normalizeNationalId(id) {
+            // إزالة أي أحرف غير رقمية
+            let cleanId = id.replace(/\D/g, '');
+            
+            // التعامل مع الأرقام المكونة من 13 رقمًا (إضافة صفر في البداية)
+            if (cleanId.length === 13) {
+                cleanId = '0' + cleanId;
+            }
+            
+            return cleanId;
+        }
+
+        // تحميل البيانات من الشيت
+        async function loadData() {
+            try {
+                const response = await fetch(SHEET_URL);
+                usersData = await response.json();
+            } catch (error) {
+                showError("حدث خطأ أثناء تحميل البيانات. الرجاء المحاولة لاحقًا.");
+            }
+        }
+        loadData();
+
+        // فتح وإغلاق نافذة البريد الإلكتروني
+        function openEmailModal(nationalId, hasEmail) {
+            document.getElementById('user-national-id').textContent = nationalId;
+            
+            if (hasEmail) {
+                document.getElementById('modal-message').textContent = 
+                    "تم العثور على بريد إلكتروني مسجل مسبقًا. يمكنك تحديثه الآن.";
+            } else {
+                document.getElementById('modal-message').textContent = 
+                    "لم يتم العثور على بريد إلكتروني مرتبط بهذا الرقم القومي. الرجاء إدخال بريد إلكتروني صالح.";
+            }
+            
+            document.getElementById('email-modal').style.display = 'block';
+            document.getElementById('email-modal-overlay').style.display = 'block';
+            document.getElementById('new-email-input').focus();
         }
         
-        return cleanId;
-    }
-
-    // ===== UPDATED FORM HANDLER =====
-    document.getElementById('login-form').addEventListener('submit', function(event) {
-        event.preventDefault();
-        const email = document.getElementById('email-input').value.trim();
-        let nationalId = document.getElementById('national-id-input').value.trim();
-        
-        // Normalize national ID (NEW CODE)
-        nationalId = normalizeNationalId(nationalId);
-        document.getElementById('national-id-input').value = nationalId; // Update input
-        
-        // إعادة تعيين أنماط الأخطاء
-        document.getElementById('email-input').classList.remove('input-error');
-        document.getElementById('national-id-input').classList.remove('input-error');
-        document.getElementById('error-section').style.display = "none";
-        document.getElementById('result-section').style.display = "none";
-        document.getElementById('update-success').style.display = "none";
-        
-        // التحقق من صحة الرقم القومي
-        if (nationalId.length !== 14 || !/^\d{14}$/.test(nationalId)) {
-            showError("الرقم القومي يجب أن يتكون من 14 رقمًا فقط.");
-            document.getElementById('national-id-input').classList.add('input-error');
-            return;
+        function closeEmailModal() {
+            document.getElementById('email-modal').style.display = 'none';
+            document.getElementById('email-modal-overlay').style.display = 'none';
+            document.getElementById('new-email-input').value = '';
+            document.getElementById('confirm-email-input').value = '';
+            document.getElementById('email-error').classList.add('hidden');
         }
+        
+        document.getElementById('close-email-modal').addEventListener('click', closeEmailModal);
+        document.getElementById('cancel-email-btn').addEventListener('click', closeEmailModal);
+        document.getElementById('email-modal-overlay').addEventListener('click', closeEmailModal);
+        
+        // التعامل مع نموذج البحث
+        document.getElementById('login-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const email = document.getElementById('email-input').value.trim();
+            let nationalId = document.getElementById('national-id-input').value.trim();
+            
+            // تنظيف وتنسيق الرقم القومي
+            nationalId = normalizeNationalId(nationalId);
+            document.getElementById('national-id-input').value = nationalId; // تحديث الحقل
+            
+            // إعادة تعيين أنماط الأخطاء
+            document.getElementById('email-input').classList.remove('input-error');
+            document.getElementById('national-id-input').classList.remove('input-error');
+            document.getElementById('error-section').style.display = "none";
+            document.getElementById('result-section').style.display = "none";
+            document.getElementById('update-success').style.display = "none";
+            
+            // التحقق من صحة الرقم القومي
+            if (nationalId.length !== 14 || !/^\d{14}$/.test(nationalId)) {
+                showError("الرقم القومي يجب أن يتكون من 14 رقمًا فقط.");
+                document.getElementById('national-id-input').classList.add('input-error');
+                return;
+            }
             
             // التحقق من صيغة البريد الإلكتروني
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
