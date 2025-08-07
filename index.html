@@ -464,27 +464,29 @@
             }
             
             // تحديث بيانات المستخدم بإضافة البريد الإلكتروني
-            if (currentUser) {
-                currentUser["البريد"] = email;
-                
-                // في التطبيق الحقيقي، هنا سيتم تحديث قاعدة البيانات
-                // للمثال، سنقوم بتحديث المصفوفة المحلية فقط
-                const index = usersData.findIndex(u => u["الرقم القومى"] === currentUser["الرقم القومى"]);
-                if (index !== -1) {
-                    usersData[index] = currentUser;
-                }
-                
-                // إغلاق النافذة وعرض بيانات المستخدم
-                closeEmailModal();
-                showResult(currentUser);
-                document.getElementById('update-success').style.display = 'flex';
-                
-                // إظهار رسالة نجاح لفترة محدودة
-                setTimeout(() => {
-                    document.getElementById('update-success').style.display = 'none';
-                }, 5000);
-            }
-        });
+           if (currentUser) {
+    updateEmailInSheet(currentUser["الرقم القومى"], email)
+      .then(result => {
+        if (result.success) {
+            currentUser["البريد"] = email;
+            const index = usersData.findIndex(u => u["الرقم القومى"] === currentUser["الرقم القومى"]);
+            if (index !== -1) usersData[index] = currentUser;
+            closeEmailModal();
+            showResult(currentUser);
+            document.getElementById('update-success').style.display = 'flex';
+            setTimeout(() => {
+                document.getElementById('update-success').style.display = 'none';
+            }, 5000);
+        } else {
+            document.getElementById('email-error-message').textContent = "حدث خطأ أثناء تحديث البريد في الجدول: " + (result.error || "");
+            errorElement.classList.remove('hidden');
+        }
+      })
+      .catch(error => {
+        document.getElementById('email-error-message').textContent = "حدث خطأ في الاتصال بخدمة التحديث.";
+        errorElement.classList.remove('hidden');
+      });
+}
 
         // عرض النتيجة بنفس هيئة الكود الأصلي
         function showResult(user) {
@@ -545,6 +547,16 @@
             document.getElementById('error-section').style.display = "block";
             document.getElementById('error-message').textContent = message;
         }
+async function updateEmailInSheet(nationalId, email) {
+    const SCRIPT_URL = "YOUR_WEB_APP_URL_HERE"; // replace with your deployed script URL
+    const response = await fetch(SCRIPT_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ nationalId, email })
+    });
+    return await response.json();
+}
+        
     </script>
 </body>
 </html>
