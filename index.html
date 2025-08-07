@@ -490,62 +490,110 @@
             }
         }
         
-        // التعامل مع نموذج تحديث البريد الإلكتروني
-        document.getElementById('email-form').addEventListener('submit', async function(event) {
-            event.preventDefault();
-            const email = document.getElementById('new-email-input').value.trim();
-            const confirmEmail = document.getElementById('confirm-email-input').value.trim();
-            const errorElement = document.getElementById('email-error');
-            const nationalId = document.getElementById('user-national-id').textContent;
-            
-            // إخفاء رسالة الخطأ السابقة
-            errorElement.classList.add('hidden');
-            
-            // التحقق من تطابق البريدين
-            if (email !== confirmEmail) {
-                document.getElementById('email-error-message').textContent = "البريد الإلكتروني وتأكيده غير متطابقين.";
-                errorElement.classList.remove('hidden');
-                return;
-            }
-            
-            // التحقق من صيغة البريد الإلكتروني
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(email)) {
-                document.getElementById('email-error-message').textContent = "صيغة البريد الإلكتروني غير صحيحة.";
-                errorElement.classList.remove('hidden');
-                return;
-            }
-            
-            // التحقق من عدم تكرار البريد الإلكتروني
-            const emailExists = usersData.some(user => 
-                user["البريد"] && user["البريد"].toLowerCase() === email.toLowerCase() &&
-                user["الرقم القومى"] !== currentUser["الرقم القومى"]
-            );
-            
-            if (emailExists) {
-                document.getElementById('email-error-message').textContent = "البريد الإلكتروني مستخدم بالفعل من قبل مستخدم آخر.";
-                errorElement.classList.remove('hidden');
-                return;
-            }
-            
-            // تحديث البريد الإلكتروني في جدول جوجل شيت
-            const updateResult = await updateEmailInSheet(nationalId, email);
-            
-            if (updateResult.success) {
-                // إغلاق النافذة وعرض بيانات المستخدم
-                closeEmailModal();
-                showResult(currentUser);
-                document.getElementById('update-success').style.display = 'flex';
-                
-                // إظهار رسالة نجاح لفترة محدودة
-                setTimeout(() => {
-                    document.getElementById('update-success').style.display = 'none';
-                }, 5000);
-            } else {
-                document.getElementById('email-error-message').textContent = updateResult.message;
-                errorElement.classList.remove('hidden');
-            }
+        // ... الكود الحالي ...
+
+// التعامل مع نموذج تحديث البريد الإلكتروني
+document.getElementById('email-form').addEventListener('submit', async function(event) {
+    event.preventDefault();
+    const email = document.getElementById('new-email-input').value.trim();
+    const confirmEmail = document.getElementById('confirm-email-input').value.trim();
+    const errorElement = document.getElementById('email-error');
+    const nationalId = document.getElementById('user-national-id').textContent;
+    
+    // إخفاء رسالة الخطأ السابقة
+    errorElement.classList.add('hidden');
+    
+    // التحقق من تطابق البريدين
+    if (email !== confirmEmail) {
+        document.getElementById('email-error-message').textContent = "البريد الإلكتروني وتأكيده غير متطابقين.";
+        errorElement.classList.remove('hidden');
+        return;
+    }
+    
+    // التحقق من صيغة البريد الإلكتروني
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+        document.getElementById('email-error-message').textContent = "صيغة البريد الإلكتروني غير صحيحة.";
+        errorElement.classList.remove('hidden');
+        return;
+    }
+    
+    // التحقق من عدم تكرار البريد الإلكتروني
+    const emailExists = usersData.some(user => 
+        user["البريد"] && user["البريد"].toLowerCase() === email.toLowerCase() &&
+        user["الرقم القومى"] !== currentUser["الرقم القومى"]
+    );
+    
+    if (emailExists) {
+        document.getElementById('email-error-message').textContent = "البريد الإلكتروني مستخدم بالفعل من قبل مستخدم آخر.";
+        errorElement.classList.remove('hidden');
+        return;
+    }
+    
+    // ===== الوظيفة الجديدة: البحث في العمود B وحفظ الإيميل في العمود A =====
+    const updateResult = await searchAndUpdateEmail(nationalId, email);
+    
+    if (updateResult.success) {
+        // إغلاق النافذة وعرض بيانات المستخدم
+        closeEmailModal();
+        showResult(currentUser);
+        document.getElementById('update-success').style.display = 'flex';
+        
+        // إظهار رسالة نجاح لفترة محدودة
+        setTimeout(() => {
+            document.getElementById('update-success').style.display = 'none';
+        }, 5000);
+    } else {
+        document.getElementById('email-error-message').textContent = updateResult.message;
+        errorElement.classList.remove('hidden');
+    }
+});
+
+// ===== الوظيفة الجديدة: البحث في العمود B وحفظ الإيميل في العمود A =====
+async function searchAndUpdateEmail(nationalId, newEmail) {
+    const saveButton = document.getElementById('save-email-btn');
+    const originalButtonText = saveButton.innerHTML;
+    
+    try {
+        // إظهار مؤشر التحميل
+        saveButton.disabled = true;
+        saveButton.innerHTML = '<div class="loading-spinner"></div> جاري الحفظ...';
+        
+        // إرسال طلب POST إلى Google Apps Script
+        const response = await fetch(GAS_WEB_APP_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                nationalId: nationalId,
+                email: newEmail
+            })
         });
+        
+        const result = await response.json();
+        
+        if (result.status === 'success') {
+            // تحديث المصفوفة المحلية بعد التحديث الناجح
+            const userIndex = usersData.findIndex(u => u["الرقم القومى"] === nationalId);
+            if (userIndex !== -1) {
+                usersData[userIndex]["البريد"] = newEmail;
+                currentUser["البريد"] = newEmail;
+            }
+            
+            return { success: true, message: 'تم تحديث البريد الإلكتروني بنجاح' };
+        } else {
+            return { success: false, message: result.message || 'حدث خطأ أثناء التحديث' };
+        }
+    } catch (error) {
+        console.error('حدث خطأ في الاتصال:', error);
+        return { success: false, message: 'فشل الاتصال بالخادم' };
+    } finally {
+        // استعادة حالة الزر
+        saveButton.disabled = false;
+        saveButton.innerHTML = originalButtonText;
+    }
+}
 
         // عرض النتيجة بنفس هيئة الكود الأصلي
         function showResult(user) {
