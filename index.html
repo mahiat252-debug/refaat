@@ -345,24 +345,12 @@
         const SHEET_URL = "https://opensheet.elk.sh/1IC_POuvxv9X2vE862HkoGlrvIIxnWgmJ4-jEMXRi0bk/Sheet1";
         
         // رابط تطبيق Google Apps Script لتحديث البريد
-        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwmH52ROaa6ErcSlk39x-qN2-1Ohxw9kVbfj-cT9M-bLBZjyn2wf5PTjZbuuWqP-X_S/exec";
+        // استبدل هذا الرابط برابط النشر الخاص بك
+        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwZSmYYJtoRRnvPBzWrHNnl0x886DxKhgbbythPdF5FzTeqHrNRglnKToT4OvUiWjBJAA/exec";
         
         // بيانات المستخدمين
         let usersData = [];
         let currentUser = null;
-
-        // ===== دالة جديدة: تنظيف الرقم القومي =====
-        function normalizeNationalId(id) {
-            // إزالة أي أحرف غير رقمية
-            let cleanId = id.replace(/\D/g, '');
-            
-            // التعامل مع الأرقام المكونة من 13 رقمًا (إضافة صفر في البداية)
-            if (cleanId.length === 13) {
-                cleanId = '0' + cleanId;
-            }
-            
-            return cleanId;
-        }
 
         // تحميل البيانات من الشيت
         async function loadData() {
@@ -408,11 +396,7 @@
         document.getElementById('login-form').addEventListener('submit', function(event) {
             event.preventDefault();
             const email = document.getElementById('email-input').value.trim();
-            let nationalId = document.getElementById('national-id-input').value.trim();
-            
-            // تنظيف وتنسيق الرقم القومي
-            nationalId = normalizeNationalId(nationalId);
-            document.getElementById('national-id-input').value = nationalId; // تحديث الحقل
+            const nationalId = document.getElementById('national-id-input').value.trim();
             
             // إعادة تعيين أنماط الأخطاء
             document.getElementById('email-input').classList.remove('input-error');
