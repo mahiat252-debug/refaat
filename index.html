@@ -116,6 +116,20 @@
             align-items: center;
             gap: 6px;
         }
+        .loading-spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3b82f6;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            margin-right: 8px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body class="text-slate-800">
@@ -318,7 +332,7 @@
                     <button type="button" id="cancel-email-btn" class="flex-1 text-slate-700 bg-slate-200 hover:bg-slate-300 font-medium rounded-xl text-lg px-6 py-3">
                         إلغاء
                     </button>
-                    <button type="submit" class="flex-1 text-white bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 font-medium rounded-xl text-lg px-6 py-3">
+                    <button type="submit" id="save-email-btn" class="flex-1 text-white bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 font-medium rounded-xl text-lg px-6 py-3">
                         حفظ البريد
                     </button>
                 </div>
@@ -329,6 +343,10 @@
     <script>
         // رابط جدول جوجل شيت بصيغة JSON
         const SHEET_URL = "https://opensheet.elk.sh/1IC_POuvxv9X2vE862HkoGlrvIIxnWgmJ4-jEMXRi0bk/Sheet1";
+        
+        // رابط تطبيق Google Apps Script لتحديث البريد
+        // استبدل هذا الرابط برابط النشر الخاص بك
+        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwZSmYYJtoRRnvPBzWrHNnl0x886DxKhgbbythPdF5FzTeqHrNRglnKToT4OvUiWjBJAA/exec";
         
         // بيانات المستخدمين
         let usersData = [];
@@ -426,12 +444,59 @@
             }
         });
         
+        // إرسال بيانات البريد الجديد إلى Google Apps Script
+        async function updateEmailInSheet(nationalId, newEmail) {
+            const saveButton = document.getElementById('save-email-btn');
+            const originalButtonText = saveButton.innerHTML;
+            
+            try {
+                // إظهار مؤشر التحميل
+                saveButton.disabled = true;
+                saveButton.innerHTML = '<div class="loading-spinner"></div> جاري الحفظ...';
+                
+                // إرسال طلب POST إلى Google Apps Script
+                const response = await fetch(GAS_WEB_APP_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        nationalId: nationalId,
+                        email: newEmail
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    // تحديث المصفوفة المحلية بعد التحديث الناجح
+                    const userIndex = usersData.findIndex(u => u["الرقم القومى"] === nationalId);
+                    if (userIndex !== -1) {
+                        usersData[userIndex]["البريد"] = newEmail;
+                        currentUser["البريد"] = newEmail;
+                    }
+                    
+                    return { success: true, message: 'تم تحديث البريد الإلكتروني بنجاح' };
+                } else {
+                    return { success: false, message: result.message || 'حدث خطأ أثناء التحديث' };
+                }
+            } catch (error) {
+                console.error('حدث خطأ في الاتصال:', error);
+                return { success: false, message: 'فشل الاتصال بالخادم' };
+            } finally {
+                // استعادة حالة الزر
+                saveButton.disabled = false;
+                saveButton.innerHTML = originalButtonText;
+            }
+        }
+        
         // التعامل مع نموذج تحديث البريد الإلكتروني
-        document.getElementById('email-form').addEventListener('submit', function(event) {
+        document.getElementById('email-form').addEventListener('submit', async function(event) {
             event.preventDefault();
             const email = document.getElementById('new-email-input').value.trim();
             const confirmEmail = document.getElementById('confirm-email-input').value.trim();
             const errorElement = document.getElementById('email-error');
+            const nationalId = document.getElementById('user-national-id').textContent;
             
             // إخفاء رسالة الخطأ السابقة
             errorElement.classList.add('hidden');
@@ -463,17 +528,10 @@
                 return;
             }
             
-            // تحديث بيانات المستخدم بإضافة البريد الإلكتروني
-            if (currentUser) {
-                currentUser["البريد"] = email;
-                
-                // في التطبيق الحقيقي، هنا سيتم تحديث قاعدة البيانات
-                // للمثال، سنقوم بتحديث المصفوفة المحلية فقط
-                const index = usersData.findIndex(u => u["الرقم القومى"] === currentUser["الرقم القومى"]);
-                if (index !== -1) {
-                    usersData[index] = currentUser;
-                }
-                
+            // تحديث البريد الإلكتروني في جدول جوجل شيت
+            const updateResult = await updateEmailInSheet(nationalId, email);
+            
+            if (updateResult.success) {
                 // إغلاق النافذة وعرض بيانات المستخدم
                 closeEmailModal();
                 showResult(currentUser);
@@ -483,6 +541,9 @@
                 setTimeout(() => {
                     document.getElementById('update-success').style.display = 'none';
                 }, 5000);
+            } else {
+                document.getElementById('email-error-message').textContent = updateResult.message;
+                errorElement.classList.remove('hidden');
             }
         });
 
