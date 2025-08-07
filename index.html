@@ -545,6 +545,23 @@
             document.getElementById('error-section').style.display = "block";
             document.getElementById('error-message').textContent = message;
         }
+        function saveEmailAndId(nationalId, email) {
+  fetch('YOUR_WEB_APP_URL', {
+    method: 'POST',
+    body: JSON.stringify({ nationalId: nationalId, email: email }),
+    headers: { 'Content-Type': 'application/json' }
+  })
+  .then(response => response.json())
+  .then(result => {
+    if (result.status === 'new_entry') {
+      alert('New ID and email saved!');
+    } else if (result.status === 'email_added') {
+      alert('Email added to existing ID!');
+    } else if (result.status === 'exists') {
+      alert('ID already has an email.');
+    }
+  });
+}
     </script>
 </body>
 </html>
