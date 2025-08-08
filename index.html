@@ -563,6 +563,18 @@
         document.getElementById('error-section').style.display = "block";
         document.getElementById('error-message').textContent = message;
     }
+        // ## كود جديد: التحكم في زر البحث الجديد ##
+document.getElementById('new-search-btn').addEventListener('click', function() {
+    // إظهار فورم البحث مرة أخرى
+    document.querySelector('.search-container').style.display = 'block';
+
+    // إخفاء قسم النتائج
+    document.getElementById('result-section').style.display = 'none';
+
+    // (اختياري) مسح البيانات من حقول الإدخال
+    document.getElementById('email-input').value = '';
+    document.getElementById('national-id-input').value = '';
+});
 </script>
 </body>
 </html>
