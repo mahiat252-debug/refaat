@@ -540,7 +540,7 @@ document.getElementById('new-search-btn').addEventListener('click', function() {
         document.getElementById('result-section').style.display = "block";
         
         let userHtml = '';
-        const mainFields = ['الاسم', 'الرقم القومى', 'البريد', 'تاريخ الميلاد', 'الجنس', 'المحافظة'];
+        const mainFields = ['الاسم', 'الرقم القومى', 'الدرجة', 'عدد التذاكر', 'اساسى 2014', 'اساسى يوليو 2025'];
         const additionalFields = Object.keys(user).filter(key => !mainFields.includes(key));
         
         mainFields.forEach(key => {
