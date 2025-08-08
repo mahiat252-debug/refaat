@@ -152,6 +152,9 @@
                     <i class="fas fa-search mr-3"></i>
                     بيانات الموظف
                 </h2>
+ <button id="new-search-btn" class="bg-blue-600 text-white font-medium py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors">
+            <i class="fas fa-search mr-2"></i>بحث جديد
+        </button>
             </div>
             
             <div class="p-6">
@@ -428,7 +431,18 @@
             openEmailModal(nationalId, false);
         }
     });
+// ## كود جديد: التحكم في زر البحث الجديد ##
+document.getElementById('new-search-btn').addEventListener('click', function() {
+    // إظهار فورم البحث مرة أخرى
+    document.querySelector('.search-container').style.display = 'block';
 
+    // إخفاء قسم النتائج
+    document.getElementById('result-section').style.display = 'none';
+
+    // (اختياري) مسح البيانات من حقول الإدخال
+    document.getElementById('email-input').value = '';
+    document.getElementById('national-id-input').value = '';
+});
     document.getElementById('email-form').addEventListener('submit', async function(event) {
         event.preventDefault();
         const email = document.getElementById('new-email-input').value.trim();
@@ -519,6 +533,9 @@
     }
 
     function showResult(user) {
+// ## السطر الجديد: إخفاء فورم البحث ##
+    document.querySelector('.search-container').style.display = "none";
+
         document.getElementById('error-section').style.display = "none";
         document.getElementById('result-section').style.display = "block";
         
