@@ -213,9 +213,27 @@
                         <h3 class="font-bold text-blue-800">ملاحظات هامة</h3>
                         <p class="text-slate-700 mt-2">
                             • هذه البيانات غير رسمية <br>
-                            • ولا يعتد بها امام اى جهة قانونية<br>
-                            • لأي استفسار يرجى التواصل مع الدعم الفني
+                            • ولا يعتد بها امام اى جهة قانونية
                         </p>
+                        <h4 class="font-bold text-blue-700 mt-4 mb-2">للتواصل مع الدعم الفني:</h4>
+                        <ul class="text-slate-700 space-y-1">
+                            <li>
+                                <i class="fab fa-whatsapp text-green-500 w-5"></i>
+                                واتساب: <a href="https://wa.me/201009844479" class="text-blue-600 hover:underline">201009844479</a>
+                            </li>
+                            <li>
+                                <i class="fas fa-phone text-blue-500 w-5"></i>
+                                اتصال مباشر: <a href="tel:+201009844479" class="text-blue-600 hover:underline">201009844479</a>
+                            </li>
+                            <li>
+                                <i class="fas fa-envelope text-red-500 w-5"></i>
+                                بريد إلكتروني: <a href="mailto:refaat252@gmail.com" class="text-blue-600 hover:underline">refaat252@gmail.com</a>
+                            </li>
+                            <li>
+                                <i class="fab fa-facebook-f text-blue-600 w-5"></i>
+                                حساب فيسبوك: <a href="https://www.facebook.com/Refaat.Saeid" class="text-blue-600 hover:underline">Refaat Saeid</a>
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </div>
@@ -382,21 +400,15 @@
         document.getElementById('confirm-email-input').value = '';
         document.getElementById('email-error').classList.add('hidden');
     }
-    // ## كود جديد: التحكم في زر البحث الجديد ##
-document.getElementById('new-search-btn').addEventListener('click', function() {
-    // إظهار فورم البحث مرة أخرى
-    document.querySelector('.search-container').style.display = 'block';
-
-    // إخفاء قسم النتائج
-    document.getElementById('result-section').style.display = 'none';
     
-    // إظهار قسم التعليمات عند بدء بحث جديد
-    document.getElementById('instructions-section').style.display = 'block';
-
-    // (اختياري) مسح البيانات من حقول الإدخال
-    document.getElementById('email-input').value = '';
-    document.getElementById('national-id-input').value = '';
-});
+    document.getElementById('new-search-btn').addEventListener('click', function() {
+        document.querySelector('.search-container').style.display = 'block';
+        document.getElementById('result-section').style.display = 'none';
+        document.getElementById('instructions-section').style.display = 'block';
+        document.getElementById('email-input').value = '';
+        document.getElementById('national-id-input').value = '';
+    });
+    
     document.getElementById('close-email-modal').addEventListener('click', closeEmailModal);
     document.getElementById('cancel-email-btn').addEventListener('click', closeEmailModal);
     document.getElementById('email-modal-overlay').addEventListener('click', closeEmailModal);
@@ -412,7 +424,6 @@ document.getElementById('new-search-btn').addEventListener('click', function() {
         document.getElementById('result-section').style.display = "none";
         document.getElementById('update-success').style.display = "none";
 
-        // إظهار قسم التعليمات عند بدء عملية بحث جديدة
         document.getElementById('instructions-section').style.display = 'block';
         
         if (nationalId.length !== 14 || !/^\d{14}$/.test(nationalId)) {
@@ -482,7 +493,6 @@ document.getElementById('new-search-btn').addEventListener('click', function() {
             return;
         }
         
-        // تم استدعاء الدالة الصحيحة هنا
         const updateResult = await searchAndUpdateEmail(nationalId, email);
         
         if (updateResult.success) {
@@ -497,8 +507,7 @@ document.getElementById('new-search-btn').addEventListener('click', function() {
             errorElement.classList.remove('hidden');
         }
     });
-
-    // تم حذف دالة updateEmailInSheet المكررة والاحتفاظ بهذه فقط
+    
     async function searchAndUpdateEmail(nationalId, newEmail) {
         const saveButton = document.getElementById('save-email-btn');
         const originalButtonText = saveButton.innerHTML;
@@ -509,8 +518,6 @@ document.getElementById('new-search-btn').addEventListener('click', function() {
             
             const response = await fetch(GAS_WEB_APP_URL, {
                 method: 'POST',
-                // تم حذف الهيدر، فهو غير ضروري في هذا النوع من الطلبات
-                // mode: 'no-cors' أو 'cors' يمكن أن تسبب مشاكل أحياناً، fetch يتعامل معها تلقائياً
                 body: JSON.stringify({
                     nationalId: nationalId,
                     email: newEmail
@@ -539,40 +546,47 @@ document.getElementById('new-search-btn').addEventListener('click', function() {
     }
 
     function showResult(user) {
-        // ## السطر الجديد: إخفاء فورم البحث ##
         document.querySelector('.search-container').style.display = "none";
-        
-        // ## سطر جديد: إخفاء قسم التعليمات عند ظهور النتائج ##
         document.getElementById('instructions-section').style.display = 'none';
-
         document.getElementById('error-section').style.display = "none";
         document.getElementById('result-section').style.display = "block";
         
+        // ** التعديل هنا: تحديد الحقول المراد عرضها واستبعاد "البريد" **
+        const fieldsToDisplay = [
+            'الاسم',
+            'الرقم القومى',
+            'الدرجة',
+            'عدد التذاكر',
+            'اساسى 2014',
+            'اساسى يوليو 2025'
+        ];
+        
         let userHtml = '';
-        const mainFields = ['الاسم', 'الرقم القومى', 'الدرجة', 'عدد التذاكر', 'اساسى 2014', 'اساسى يوليو 2025'];
-        const additionalFields = Object.keys(user).filter(key => !mainFields.includes(key));
-        
-        mainFields.forEach(key => {
+        fieldsToDisplay.forEach(key => {
             if (user[key]) {
                 userHtml += `<div class="info-item"><div class="info-label">${key}</div><div class="info-value">${user[key]}</div></div>`;
             }
         });
         
-        userHtml += `<div class="py-3 px-4 bg-slate-50"><h3 class="font-bold text-blue-700">معلومات إضافية</h3></div>`;
-        
-        additionalFields.forEach(key => {
-            if (user[key]) {
-                userHtml += `<div class="info-item"><div class="info-label">${key}</div><div class="info-value">${user[key]}</div></div>`;
-            }
-        });
+        // ** لا يزال بإمكانك عرض الحقول الإضافية الأخرى إذا كانت موجودة **
+        const additionalFields = Object.keys(user).filter(key => 
+            !fieldsToDisplay.includes(key) && key !== 'البريد'
+        );
+
+        if (additionalFields.length > 0) {
+            userHtml += `<div class="py-3 px-4 bg-slate-50"><h3 class="font-bold text-blue-700">معلومات إضافية</h3></div>`;
+            additionalFields.forEach(key => {
+                if (user[key]) {
+                    userHtml += `<div class="info-item"><div class="info-label">${key}</div><div class="info-value">${user[key]}</div></div>`;
+                }
+            });
+        }
         
         document.getElementById('user-data').innerHTML = userHtml;
     }
 
     function showError(message) {
-        // ## سطر جديد: إظهار قسم التعليمات عند ظهور خطأ ##
         document.getElementById('instructions-section').style.display = 'block';
-
         document.getElementById('result-section').style.display = "none";
         document.getElementById('error-section').style.display = "block";
         document.getElementById('error-message').textContent = message;
