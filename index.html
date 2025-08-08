@@ -146,27 +146,14 @@
         </div>
 
         <!-- بطاقة البحث -->
-        <div id="result-section" class="result-card bg-white rounded-2xl p-6 mt-6 shadow-lg" style="display:none;">
-    <div class="flex justify-between items-center mb-6">
-        <h2 class="text-2xl font-bold text-blue-700 flex items-center">
-            <i class="fas fa-user-circle mr-3"></i>
-            بيانات المواطن
-        </h2>
-
-        <button id="new-search-btn" class="bg-blue-600 text-white font-medium py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors">
-            <i class="fas fa-search mr-2"></i>بحث جديد
-        </button>
-        
-        <div id="update-success" class="success-badge" style="display:none;">
-            <i class="fas fa-check-circle"></i>
-            تم تحديث البيانات بنجاح
-        </div>
-    </div>
-    
-    <div class="user-card">
-        <div id="user-data" class="divide-y divide-slate-100"></div>
-    </div>
-    </div>
+        <div class="search-container bg-white mb-10">
+            <div class="bg-gradient-to-r from-blue-600 to-blue-700 py-5 px-6">
+                <h2 class="text-xl font-bold text-white flex items-center">
+                    <i class="fas fa-search mr-3"></i>
+                    بيانات الموظف
+                </h2>
+            </div>
+            
             <div class="p-6">
                 <form id="login-form" class="flex flex-col gap-5">
                     <div>
@@ -441,18 +428,7 @@
             openEmailModal(nationalId, false);
         }
     });
-// ## كود جديد: التحكم في زر البحث الجديد ##
-document.getElementById('new-search-btn').addEventListener('click', function() {
-    // إظهار فورم البحث مرة أخرى
-    document.querySelector('.search-container').style.display = 'block';
 
-    // إخفاء قسم النتائج
-    document.getElementById('result-section').style.display = 'none';
-
-    // (اختياري) مسح البيانات من حقول الإدخال
-    document.getElementById('email-input').value = '';
-    document.getElementById('national-id-input').value = '';
-});
     document.getElementById('email-form').addEventListener('submit', async function(event) {
         event.preventDefault();
         const email = document.getElementById('new-email-input').value.trim();
@@ -543,9 +519,6 @@ document.getElementById('new-search-btn').addEventListener('click', function() {
     }
 
     function showResult(user) {
-// ## السطر الجديد: إخفاء فورم البحث ##
-    document.querySelector('.search-container').style.display = "none";
-
         document.getElementById('error-section').style.display = "none";
         document.getElementById('result-section').style.display = "block";
         
