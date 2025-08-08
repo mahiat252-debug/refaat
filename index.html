@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    </title>ادارة النجيلة التعليمية</title>
+    <title>ادارة النجيلة التعليمية</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -232,8 +232,8 @@
             </div>
         </div>
         
-        <!-- قسم التعليمات -->
-        <div class="bg-blue-50 rounded-2xl p-6 mt-10">
+        <!-- قسم التعليمات - تم إضافة معرف (ID) هنا -->
+        <div id="instructions-section" class="bg-blue-50 rounded-2xl p-6 mt-10">
             <h3 class="text-xl font-bold text-blue-800 mb-4 flex items-center">
                 <i class="fas fa-info-circle mr-2"></i>
                 تعليمات الاستخدام
@@ -389,6 +389,9 @@ document.getElementById('new-search-btn').addEventListener('click', function() {
 
     // إخفاء قسم النتائج
     document.getElementById('result-section').style.display = 'none';
+    
+    // إظهار قسم التعليمات عند بدء بحث جديد
+    document.getElementById('instructions-section').style.display = 'block';
 
     // (اختياري) مسح البيانات من حقول الإدخال
     document.getElementById('email-input').value = '';
@@ -408,6 +411,9 @@ document.getElementById('new-search-btn').addEventListener('click', function() {
         document.getElementById('error-section').style.display = "none";
         document.getElementById('result-section').style.display = "none";
         document.getElementById('update-success').style.display = "none";
+
+        // إظهار قسم التعليمات عند بدء عملية بحث جديدة
+        document.getElementById('instructions-section').style.display = 'block';
         
         if (nationalId.length !== 14 || !/^\d{14}$/.test(nationalId)) {
             showError("الرقم القومي يجب أن يتكون من 14 رقمًا فقط.");
@@ -534,7 +540,10 @@ document.getElementById('new-search-btn').addEventListener('click', function() {
 
     function showResult(user) {
         // ## السطر الجديد: إخفاء فورم البحث ##
-    document.querySelector('.search-container').style.display = "none";
+        document.querySelector('.search-container').style.display = "none";
+        
+        // ## سطر جديد: إخفاء قسم التعليمات عند ظهور النتائج ##
+        document.getElementById('instructions-section').style.display = 'none';
 
         document.getElementById('error-section').style.display = "none";
         document.getElementById('result-section').style.display = "block";
@@ -561,6 +570,9 @@ document.getElementById('new-search-btn').addEventListener('click', function() {
     }
 
     function showError(message) {
+        // ## سطر جديد: إظهار قسم التعليمات عند ظهور خطأ ##
+        document.getElementById('instructions-section').style.display = 'block';
+
         document.getElementById('result-section').style.display = "none";
         document.getElementById('error-section').style.display = "block";
         document.getElementById('error-message').textContent = message;
