@@ -1,0 +1,206 @@
+(cd "$(git rev-parse --show-toplevel)" && git apply --3way <<'EOF'
+diff --git a/style.css b/style.css
+--- a/style.css
++++ b/style.css
+@@ -0,0 +1,199 @@
++/* Global design tokens */
++:root {
++  --clr-primary-500: #3b82f6;
++  --clr-primary-600: #2563eb;
++  --clr-accent-500: #10b981;
++  --clr-danger-500: #ef4444;
++  --clr-surface: #ffffff;
++  --clr-surface-soft: #f9fafb;
++  --clr-border: #e2e8f0;
++
++  --radius-lg: 1.25rem;
++  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
++  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.1);
++
++  --bg-grad-start: #f0f4ff;
++  --bg-grad-end: #e6f0ff;
++}
++
++/* Dark-mode overrides */
++@media (prefers-color-scheme: dark) {
++  :root {
++    --clr-surface: #0f172a;
++    --clr-surface-soft: #1e293b;
++    --clr-border: #334155;
++
++    --clr-primary-500: #60a5fa;
++    --clr-primary-600: #3b82f6;
++    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
++    --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.5);
++
++    --bg-grad-start: #1e293b;
++    --bg-grad-end: #0f172a;
++  }
++  body {
++    color: #f8fafc;
++  }
++}
++
++/* Base */
++body {
++  font-family: 'Tajawal', sans-serif;
++  background: linear-gradient(135deg, var(--bg-grad-start) 0%, var(--bg-grad-end) 100%);
++  min-height: 100vh;
++}
++
++/* Card & container helpers */
++.search-container {
++  box-shadow: var(--shadow-sm);
++  transition: box-shadow 0.25s ease;
++  border-radius: var(--radius-lg);
++  overflow: hidden;
++}
++.search-container:hover {
++  box-shadow: var(--shadow-lg);
++}
++
++.result-card,
++.email-modal {
++  animation: fadeIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
++}
++
++@keyframes fadeIn {
++  from {
++    opacity: 0;
++    transform: scale(0.98) translateY(12px);
++  }
++  to {
++    opacity: 1;
++    transform: scale(1) translateY(0);
++  }
++}
++
++/* Modal */
++.email-modal {
++  position: fixed;
++  top: 50%;
++  left: 50%;
++  transform: translate(-50%, -50%);
++  z-index: 100;
++  width: 90%;
++  max-width: 500px;
++  background: var(--clr-surface);
++  border-radius: var(--radius-lg);
++  box-shadow: var(--shadow-lg);
++  display: none;
++}
++.modal-overlay {
++  position: fixed;
++  inset: 0;
++  background: rgba(0, 0, 0, 0.5);
++  z-index: 99;
++  display: none;
++}
++
++/* Form helpers */
++.input-error {
++  border-color: var(--clr-danger-500) !important;
++  background-color: #fef2f2 !important;
++}
++
++/* User card */
++.user-card {
++  background: linear-gradient(to right, var(--clr-surface), var(--clr-surface-soft));
++  border-radius: 1rem;
++  overflow: hidden;
++  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
++}
++
++.info-item {
++  display: flex;
++  justify-content: space-between;
++  padding: 14px 16px;
++  border-bottom: 1px solid var(--clr-border);
++  transition: background-color 0.2s;
++}
++.info-item:hover {
++  background-color: var(--clr-surface-soft);
++}
++.info-label {
++  color: #64748b;
++  font-weight: 500;
++  min-width: 140px;
++}
++.info-value {
++  color: #1e293b;
++  font-weight: 600;
++  text-align: left;
++  flex: 1;
++}
++
++.highlight-box {
++  background: linear-gradient(135deg, #e0f2fe 0%, #dbeafe 100%);
++  border-radius: 0.75rem;
++  padding: 20px 24px;
++  margin-top: 20px;
++  border-left: 4px solid var(--clr-primary-500);
++}
++
++.section-title {
++  position: relative;
++  padding-right: 20px;
++  margin-bottom: 20px;
++}
++.section-title::after {
++  content: '';
++  position: absolute;
++  right: 0;
++  bottom: -8px;
++  width: 50px;
++  height: 3px;
++  background: linear-gradient(to right, var(--clr-primary-500), #60a5fa);
++  border-radius: 3px;
++}
++
++.success-badge {
++  background: linear-gradient(to right, var(--clr-accent-500), #34d399);
++  color: white;
++  padding: 8px 16px;
++  border-radius: 20px;
++  font-size: 14px;
++  font-weight: 600;
++  display: inline-flex;
++  align-items: center;
++  gap: 6px;
++}
++
++.loading-spinner {
++  border: 3px solid #f3f3f3;
++  border-top: 3px solid var(--clr-primary-500);
++  border-radius: 50%;
++  width: 24px;
++  height: 24px;
++  animation: spin 1s linear infinite;
++  display: inline-block;
++  margin-right: 8px;
++}
++@keyframes spin {
++  to {
++    transform: rotate(360deg);
++  }
++}
++
++/* Responsive grid for user data */
++#user-data {
++  display: grid;
++  grid-template-columns: 1fr;
++}
++@media (min-width: 768px) {
++  #user-data {
++    grid-template-columns: 1fr 1fr;
++  }
++  #user-data .info-item {
++    border-bottom: none !important;
++    border-right: 1px solid var(--clr-border);
++  }
++  #user-data .info-item:nth-child(2n) {
++    border-right: none;
++  }
++}
+EOF
+)
