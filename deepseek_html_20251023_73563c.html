@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام الغياب والحضور للمدارس</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-school"></i> نظام متابعة الغياب والحضور للمدارس</h1>
+            <p class="subtitle">أدخل بيانات الغياب والحضور للمدارس حسب الصفوف</p>
+        </header>
+
+        <main>
+            <!-- رسائل التنبيه -->
+            <div id="alert" class="alert hidden"></div>
+
+            <!-- قسم البيانات الأساسية -->
+            <section class="card">
+                <h2><i class="fas fa-info-circle"></i> البيانات الأساسية</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="schoolCode">كود المدرسة *</label>
+                        <input type="text" id="schoolCode" required placeholder="أدخل كود المدرسة">
+                    </div>
+                    <div class="form-group">
+                        <label for="schoolName">اسم المدرسة *</label>
+                        <input type="text" id="schoolName" required placeholder="أدخل اسم المدرسة">
+                    </div>
+                    <div class="form-group">
+                        <label for="educationLevel">المرحلة التعليمية *</label>
+                        <select id="educationLevel" required>
+                            <option value="">اختر المرحلة</option>
+                            <option value="ابتدائي">ابتدائي</option>
+                            <option value="اعدادي">اعدادي</option>
+                            <option value="ثانوي">ثانوي</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="date">التاريخ *</label>
+                        <input type="date" id="date" required>
+                    </div>
+                </div>
+            </section>
+
+            <!-- قسم بيانات الصفوف -->
+            <section class="card">
+                <h2><i class="fas fa-table"></i> بيانات الصفوف</h2>
+                <div id="gradesContainer">
+                    <!-- سيتم إضافة حقول الصفوف هنا ديناميكياً -->
+                </div>
+            </section>
+
+            <!-- قسم الإجراءات -->
+            <section class="card">
+                <div class="actions">
+                    <button id="saveBtn" class="btn btn-primary">
+                        <i class="fas fa-save"></i> حفظ البيانات
+                    </button>
+                    <button id="exportBtn" class="btn btn-success">
+                        <i class="fas fa-file-export"></i> ترحيل البيانات
+                    </button>
+                    <button id="clearBtn" class="btn btn-secondary">
+                        <i class="fas fa-broom"></i> مسح الكل
+                    </button>
+                </div>
+            </section>
+
+            <!-- قسم البيانات المحفوظة -->
+            <section class="card">
+                <h2><i class="fas fa-list"></i> البيانات المحفوظة</h2>
+                <div id="savedData" class="saved-data">
+                    <!-- سيتم عرض البيانات المحفوظة هنا -->
+                </div>
+            </section>
+
+            <!-- قسم إعدادات الترحيل -->
+            <section class="card">
+                <h2><i class="fas fa-cogs"></i> إعدادات الترحيل</h2>
+                <div class="setup-section">
+                    <div class="form-group">
+                        <label for="scriptUrl">رابط Google Apps Script</label>
+                        <input type="text" id="scriptUrl" 
+                               placeholder="https://script.google.com/macros/s/.../exec"
+                               value="https://script.google.com/macros/s/AKfycbwYsQ5rc3dPSaoTzT6aToGMfbnQ-eXrmhkPzLPDc-QpBLuVUQ5IgdcgqQ75zdJRxmcfNQ/exec">
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="useCorsProxy"> 
+                            استخدام CORS Proxy (إذا فشل الاتصال المباشر)
+                        </label>
+                    </div>
+                    <div class="actions">
+                        <button id="testConnection" class="btn btn-info">
+                            <i class="fas fa-plug"></i> اختبار الاتصال
+                        </button>
+                    </div>
+                    <div id="connectionStatus" class="status-message">
+                        لم يتم اختبار الاتصال بعد
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>جميع الحقوق محفوظة &copy; 2023 - نظام متابعة الغياب والحضور للمدارس</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
