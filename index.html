@@ -1,86 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Employee Management</title>
-    <link rel="stylesheet" href="styles.css">
-    <script>
-        const SHEET_URL = 'YOUR_SHEET_URL';
-        const GAS_WEB_APP_URL = 'YOUR_GAS_WEB_APP_URL';
-
-        async function fetchEmployees() {
-            try {
-                const response = await fetch(GAS_WEB_APP_URL);
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return await response.json();
-            } catch (error) {
-                console.error('There was a problem with the fetch operation:', error);
-                alert('Error fetching employee data. Please try again later.');
-            }
-        }
-
-        function renderEmployees(employees) {
-            const table = document.getElementById('employeeTable');
-            table.innerHTML = '';
-            employees.forEach(employee => {
-                const row = document.createElement('tr');
-                row.innerHTML = `<td>${employee.nationalId}</td><td>${employee.email}</td>`;
-                table.appendChild(row);
-            });
-        }
-
-        async function searchEmployee() {
-            const searchId = document.getElementById('searchId').value;
-            const employees = await fetchEmployees();
-            const filteredEmployees = employees.filter(emp => emp.nationalId === searchId || emp.email === searchId);
-            renderEmployees(filteredEmployees);
-        }
-
-        async function updateEmail() {
-            const emailInput = document.getElementById('emailInput').value;
-            const nationalIdInput = document.getElementById('nationalIdInput').value;
-            try {
-                const response = await fetch(GAS_WEB_APP_URL, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ nationalId: nationalIdInput, email: emailInput }),
-                });
-                if (!response.ok) {
-                    throw new Error('Error updating email.');
-                }
-                alert('Email updated successfully!');
-                fetchEmployees();
-            } catch (error) {
-                console.error('Error updating email:', error);
-                alert('Error updating email. Please try again later.');
-            }
-        }
-
-        window.onload = async function() {
-            const employees = await fetchEmployees();
-            renderEmployees(employees);
-        };
-    </script>
+<title>Updated Index</title>
 </head>
 <body>
-    <h1>Employee Management System</h1>
-    <input type="text" id="searchId" placeholder="Search by National ID or Email" />
-    <button onclick="searchEmployee()">Search</button>
-
-    <h2>Employees</h2>
-    <table id="employeeTable">
-        <tr>
-            <th>National ID</th>
-            <th>Email</th>
-        </tr>
-    </table>
-
-    <h2>Update Email</h2>
-    <input type="text" id="nationalIdInput" placeholder="National ID" />
-    <input type="email" id="emailInput" placeholder="New Email" />
-    <button onclick="updateEmail()">Update Email</button>
+<h1>Welcome to the updated page!</h1>
+<p>Current Date and Time: 2026-02-13 10:09:18 UTC</p>
 </body>
 </html>
