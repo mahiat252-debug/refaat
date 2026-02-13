@@ -3,78 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Index</title>
+    <title>Enhanced Index</title>
+    <link rel="stylesheet" href="styles.css">
     <script>
-        // Environment variable support for API URLs
-        const API_URL = process.env.API_URL;
-
-        // Function to handle API requests with retry logic
-        async function fetchWithRetry(url, options, retries = 3) {
-            for (let i = 0; i < retries; i++) {
-                try {
-                    const response = await fetch(url, options);
-                    if (!response.ok) throw new Error('Network response was not ok');
-                    return await response.json();
-                } catch (error) {
-                    if (i === retries - 1) throw error;
+        // Retry Logic
+        function fetchWithRetry(url, options, retries = 3) {
+            return fetch(url, options).catch(error => {
+                if (retries > 0) {
+                    return fetchWithRetry(url, options, retries - 1);
                 }
-            }
+                throw error;
+            });
         }
-
-        // LocalStorage caching
-        async function fetchData(url) {
-            const cachedData = localStorage.getItem(url);
-            if (cachedData) return JSON.parse(cachedData);
-            const data = await fetchWithRetry(url);
-            localStorage.setItem(url, JSON.stringify(data));
-            return data;
-        }
-
-        // Input validation for Egyptian ID
-        function isValidEgyptianID(id) {
-            // Validation logic goes here with checksum calculation
-            return true; // Placeholder
-        }
-
-        // Debounced search function
-        function debounce(func, timeout = 300) {
-            let timer;
-            return (...args) => {
-                clearTimeout(timer);
-                timer = setTimeout(() => {
-                    func.apply(this, args);
-                }, timeout);
-            };
-        }
-
-        // Pagination support
-        function paginate(data, page, limit) {
-            return data.slice((page - 1) * limit, page * limit);
-        }
-
-        // ARIA labels for accessibility
-        function setAccessibilityLabels(element, label) {
-            element.setAttribute('aria-label', label);
-        }
-
-        // Improved loading states with skeleton loading
-        function showLoading() {
-            // Logic to show a skeleton loader
-        }
-
-        // Offline detection
-        window.addEventListener('offline', () => {
-            alert('You are currently offline.');
-        });
-
-        window.addEventListener('online', () => {
-            alert('You are back online.');
-        });
     </script>
 </head>
 <body>
-    <h1>Welcome to the Index Page</h1>
-    <input type="text" id="search" placeholder="Search..." aria-label="Search input" oninput="debounce(searchFunction)">
-    <div id="results" role="region" aria-live="polite"></div>
+    <header>
+        <h1>Welcome to Our Enhanced Application</h1>
+    </header>
+    <main>
+        <section>
+            <h2>Welcome Message</h2>
+            <p>We aim to provide a secure and high-performance experience.</p>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2026 Our Application. All rights reserved.</p>
+    </footer>
+    <script>
+        // Adding error handling
+        window.addEventListener('error', function(event) {
+            console.error('Error caught:', event.message);
+            alert('An error occurred: ' + event.message);
+        });
+
+        // Offline support
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('service-worker.js')
+                .then(function() {
+                    console.log('Service Worker Registered');
+                });
+        }
+    </script>
 </body>
 </html>
