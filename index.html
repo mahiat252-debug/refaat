@@ -65,23 +65,30 @@
         .info-item {
             display: flex;
             justify-content: space-between;
-            padding: 12px 16px;
+            padding: 16px 20px;
             border-bottom: 1px solid #f1f5f9;
-            transition: background-color 0.2s;
+            transition: all 0.2s;
         }
         .info-item:hover {
             background-color: #f8fafc;
+            transform: translateX(-2px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
         }
         .info-label {
-            color: #64748b;
-            font-weight: 500;
-            min-width: 140px;
+            color: #334155;
+            font-weight: 600;
+            min-width: 160px;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
         .info-value {
-            color: #1e293b;
-            font-weight: 600;
+            color: #0f172a;
+            font-weight: 700;
             text-align: left;
             flex: 1;
+            direction: ltr;
         }
         .highlight-box {
             background: linear-gradient(135deg, #e0f2fe 0%, #dbeafe 100%);
@@ -129,6 +136,28 @@
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
+        }
+        /* شريط التمرير لقسم المدفوعات */
+        .payments-scroll {
+            max-height: 300px;
+            overflow-y: auto;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            background-color: white;
+        }
+        .payments-scroll::-webkit-scrollbar {
+            width: 8px;
+        }
+        .payments-scroll::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 10px;
+        }
+        .payments-scroll::-webkit-scrollbar-thumb {
+            background: #94a3b8;
+            border-radius: 10px;
+        }
+        .payments-scroll::-webkit-scrollbar-thumb:hover {
+            background: #64748b;
         }
     </style>
 </head>
@@ -193,9 +222,9 @@
                     <i class="fas fa-user-circle mr-3"></i>
                     بيانات الموظف
                 </h2>
-                 <button id="new-search-btn" class="bg-blue-600 text-white font-medium py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors">
-            <i class="fas fa-search mr-2"></i>بحث جديد
-        </button>
+                <button id="new-search-btn" class="bg-blue-600 text-white font-medium py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors">
+                    <i class="fas fa-search mr-2"></i>بحث جديد
+                </button>
                 <div id="update-success" class="success-badge" style="display:none;">
                     <i class="fas fa-check-circle"></i>
                     تم تحديث البيانات بنجاح
@@ -246,7 +275,7 @@
             </div>
         </div>
         
-        <!-- قسم التعليمات - تم إضافة معرف (ID) هنا -->
+        <!-- قسم التعليمات -->
         <div id="instructions-section" class="bg-blue-50 rounded-2xl p-6 mt-10">
             <h3 class="text-xl font-bold text-blue-800 mb-4 flex items-center">
                 <i class="fas fa-info-circle mr-2"></i>
@@ -315,9 +344,7 @@
                         الرقم القومي: <span id="user-national-id" class="font-bold"></span>
                     </p>
                 </div>
-                <p id="modal-message" class="text-slate-700 mt-2">
-                    <!-- سيتم تعبئته بواسطة الجافاسكريبت -->
-                </p>
+                <p id="modal-message" class="text-slate-700 mt-2"></p>
             </div>
             
             <form id="email-form">
@@ -358,12 +385,10 @@
     </div>
 
     <script>
-    // تأكد من أن هذا الرابط هو الرابط العام الذي يسمح بالوصول للجميع
+    // روابط البيانات (تأكد من صحتها)
     const SHEET_URL = "https://opensheet.elk.sh/1IC_POuvxv9X2vE862HkoGlrvIIxnWgmJ4-jEMXRi0bk/Sheet1";
-    
-    // !! مهم: استبدل هذا الرابط بالرابط الجديد الذي حصلت عليه بعد إعادة النشر
     const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyfjH09tRmGTdJ-QSK5PrcWD40W9tTZ5gmKd_XpZc5DHvstBe3sF5uwP2zz53aEWsNt/exec";
-    
+
     let usersData = [];
     let currentUser = null;
 
@@ -377,13 +402,14 @@
     }
     loadData();
 
-    function openEmailModal(nationalId, hasEmail) {
+    function openEmailModal(nationalId, hasEmail, prefilledEmail = '') {
         document.getElementById('user-national-id').textContent = nationalId;
         if (hasEmail) {
             document.getElementById('modal-message').textContent = "تم العثور على بريد إلكتروني مسجل مسبقًا. يمكنك تحديثه الآن.";
         } else {
             document.getElementById('modal-message').textContent = "لم يتم العثور على بريد إلكتروني مرتبط بهذا الرقم القومي. الرجاء إدخال بريد إلكتروني صالح.";
         }
+        document.getElementById('new-email-input').value = prefilledEmail;
         document.getElementById('email-modal').style.display = 'block';
         document.getElementById('email-modal-overlay').style.display = 'block';
         document.getElementById('new-email-input').focus();
@@ -446,13 +472,13 @@
         currentUser = user;
         
         if (user["البريد"] && user["البريد"].trim() !== '') {
-            if (user["البريد"] === email) {
+            if (user["البريد"].trim() === email) {
                 showResult(user);
             } else {
                 showError("البريد الإلكتروني المدخل غير متطابق مع البريد المسجل لهذا الرقم القومي.");
             }
         } else {
-            openEmailModal(nationalId, false);
+            openEmailModal(nationalId, false, email);
         }
     });
 
@@ -479,7 +505,7 @@
         }
         
         const emailExists = usersData.some(user => 
-            user["البريد"] && user["البريد"].toLowerCase() === email.toLowerCase() &&
+            user["البريد"] && user["البريد"].trim().toLowerCase() === email.toLowerCase() &&
             user["الرقم القومى"] !== currentUser["الرقم القومى"]
         );
         
@@ -534,55 +560,95 @@
             }
         } catch (error) {
             console.error('حدث خطأ في الاتصال:', error);
-            return { success: false, message: 'فشل الاتصال بالخادم' };
+            return { success: false, message: 'فشل الاتصال بالخادم: ' + error.message };
         } finally {
             saveButton.disabled = false;
             saveButton.innerHTML = originalButtonText;
         }
     }
 
+    // ========== دالة showResult بعد التعديلات النهائية ==========
     function showResult(user) {
         document.querySelector('.search-container').style.display = "none";
         document.getElementById('instructions-section').style.display = 'none';
         document.getElementById('error-section').style.display = "none";
         document.getElementById('result-section').style.display = "block";
-        
-        // ** التعديل هنا: تحديد الحقول المراد عرضها واستبعاد "البريد" **
+
+        // تحديث أسماء الحقول المعروضة (تم تغيير "اساسى 2014" إلى "اساسى 30/6")
         const fieldsToDisplay = [
             'الاسم',
             'الرقم القومى',
             'الدرجة',
             'عدد التذاكر',
             'الحالة الاجتماعية',
-            'اساسى 2014',
+            'اساسى 30/6',
             'اساسى يوليو 2025'
         ];
+
+        // أيقونات للحقول
+        const fieldIcons = {
+            'الاسم': 'fa-user',
+            'الرقم القومى': 'fa-id-card',
+            'الدرجة': 'fa-star',
+            'عدد التذاكر': 'fa-ticket-alt',
+            'الحالة الاجتماعية': 'fa-people-arrows',
+            'اساسى 30/6': 'fa-money-bill-wave',
+            'اساسى يوليو 2025': 'fa-money-bill-wave',
+        };
+
+        // بناء قسم البيانات الأساسية (باستخدام info-item مع الأيقونات)
+        let userHtml = '<div class="divide-y divide-slate-100">';
         
-        let userHtml = '';
         fieldsToDisplay.forEach(key => {
-            if (user[key]) {
-                userHtml += `<div class="info-item"><div class="info-label">${key}</div><div class="info-value">${user[key]}</div></div>`;
+            // البحث عن القيمة: إذا كان المفتاح "اساسى 30/6" ولم نجده، نبحث عن "اساسى 2014"
+            let value = user[key];
+            if (key === 'اساسى 30/6' && !value && user['اساسى 2014']) {
+                value = user['اساسى 2014'];
+            }
+            
+            if (value) {
+                const icon = fieldIcons[key] || 'fa-info-circle';
+                userHtml += `
+                    <div class="info-item">
+                        <div class="info-label">
+                            <i class="fas ${icon} ml-2 text-blue-500"></i>${key}
+                        </div>
+                        <div class="info-value font-bold text-left">${value}</div>
+                    </div>`;
             }
         });
-        
-        // ** لا يزال بإمكانك عرض الحقول الإضافية الأخرى إذا كانت موجودة **
+
+        userHtml += '</div>';
+
+        // قسم المدفوعات (كان "معلومات إضافية" سابقًا) مع شريط تمرير
         const additionalFields = Object.keys(user).filter(key => 
-            !fieldsToDisplay.includes(key) && key !== 'البريد'
+            !fieldsToDisplay.includes(key) && 
+            key !== 'البريد' && 
+            key !== 'اساسى 2014' // استبعاد المفتاح القديم حتى لا يتكرر
         );
 
         if (additionalFields.length > 0) {
-            userHtml += `<div class="py-3 px-4 bg-slate-50"><h3 class="font-bold text-blue-700">معلومات إضافية</h3></div>`;
+            userHtml += `<div class="mt-8"><h3 class="font-bold text-blue-700 text-xl mb-4">مدفوعات</h3>`;
+            userHtml += `<div class="payments-scroll p-2">`; // بداية الشريط
+            
             additionalFields.forEach(key => {
                 if (user[key]) {
-                    userHtml += `<div class="info-item"><div class="info-label">${key}</div><div class="info-value">${user[key]}</div></div>`;
+                    userHtml += `
+                        <div class="info-item">
+                            <div class="info-label">${key}</div>
+                            <div class="info-value text-left">${user[key]}</div>
+                        </div>`;
                 }
             });
+            
+            userHtml += '</div></div>'; // إغلاق الشريط والقسم
         }
         
         document.getElementById('user-data').innerHTML = userHtml;
     }
 
     function showError(message) {
+        document.querySelector('.search-container').style.display = "block";
         document.getElementById('instructions-section').style.display = 'block';
         document.getElementById('result-section').style.display = "none";
         document.getElementById('error-section').style.display = "block";
