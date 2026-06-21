@@ -89,6 +89,7 @@
             text-align: left;
             flex: 1;
             direction: ltr;
+            word-break: break-word;
         }
         .highlight-box {
             background: linear-gradient(135deg, #e0f2fe 0%, #dbeafe 100%);
@@ -163,71 +164,73 @@
 </head>
 <body class="text-slate-800">
     <div class="container mx-auto max-w-4xl py-10 px-4">
-        <!-- شريط العنوان -->
-        <div class="text-center mb-12">
+        <header class="text-center mb-12">
             <h1 class="text-3xl font-bold text-blue-700 mb-3">
-                <i class="fas fa-id-card mr-2"></i>
+                <i class="fas fa-id-card mr-2" aria-hidden="true"></i>
                 ادارة النجيلة التعليمية
             </h1>
             <p class="text-slate-600 max-w-2xl mx-auto">
                 نظام متكامل للبحث عن بيانات الموظفين باستخدام الرقم القومي و البريد الإلكتروني
             </p>
-        </div>
+        </header>
 
         <!-- بطاقة البحث -->
+        <main>
         <div class="search-container bg-white mb-10">
             <div class="bg-gradient-to-r from-blue-600 to-blue-700 py-5 px-6">
                 <h2 class="text-xl font-bold text-white flex items-center">
-                    <i class="fas fa-search mr-3"></i>
+                    <i class="fas fa-search mr-3" aria-hidden="true"></i>
                     بيانات الموظف
                 </h2>
             </div>
             
             <div class="p-6">
-                <form id="login-form" class="flex flex-col gap-5">
+                <form id="login-form" class="flex flex-col gap-5" novalidate>
                     <div>
-                        <label class="block text-slate-700 mb-2 font-medium">
-                            <i class="fas fa-envelope mr-2 text-blue-500"></i>
+                        <label for="email-input" class="block text-slate-700 mb-2 font-medium">
+                            <i class="fas fa-envelope mr-2 text-blue-500" aria-hidden="true"></i>
                             البريد الإلكتروني
                         </label>
-                        <input type="email" id="email-input"
+                        <input type="email" id="email-input" name="email" autocomplete="email"
                             class="bg-slate-50 border border-slate-300 text-slate-900 text-lg rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block w-full px-4 py-3"
                             placeholder="ادخل البريد الإلكتروني..." required>
                     </div>
                     
                     <div>
-                        <label class="block text-slate-700 mb-2 font-medium">
-                            <i class="fas fa-id-card mr-2 text-blue-500"></i>
+                        <label for="national-id-input" class="block text-slate-700 mb-2 font-medium">
+                            <i class="fas fa-id-card mr-2 text-blue-500" aria-hidden="true"></i>
                             الرقم القومي
                         </label>
-                        <input type="text" id="national-id-input"
+                        <input type="text" inputmode="numeric" pattern="\d{14}" id="national-id-input" name="nationalId"
                             class="bg-slate-50 border border-slate-300 text-slate-900 text-lg rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block w-full px-4 py-3"
-                            placeholder="ادخل الرقم القومي (14 رقمًا)..." maxlength="14" required>
-                        <p class="text-sm text-slate-500 mt-1">يجب أن يتكون الرقم القومي من 14 رقمًا فقط</p>
+                            placeholder="ادخل الرقم القومي (14 رقمًا)..." maxlength="14" required aria-describedby="nid-help">
+                        <p id="nid-help" class="text-sm text-slate-500 mt-1">يجب أن يتكون الرقم القومي من 14 رقمًا فقط</p>
                     </div>
                     
-                    <button type="submit"
-                        class="w-full text-white bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-xl text-lg px-6 py-3 transition-all">
-                        <i class="fas fa-search mr-2"></i>
-                        البحث  
+                    <button type="submit" id="search-btn"
+                        class="w-full text-white bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-xl px-4 py-3">
+                        <i class="fas fa-search mr-2" aria-hidden="true"></i>
+                        البحث
                     </button>
                 </form>
             </div>
         </div>
 
         <!-- قسم النتائج -->
-        <div id="result-section" class="result-card bg-white rounded-2xl p-6 mt-6 shadow-lg" style="display:none;">
+        <div id="result-section" class="result-card bg-white rounded-2xl p-6 mt-6 shadow-lg" style="display:none;" aria-live="polite">
             <div class="flex justify-between items-center mb-6">
                 <h2 class="text-2xl font-bold text-blue-700 flex items-center">
-                    <i class="fas fa-user-circle mr-3"></i>
+                    <i class="fas fa-user-circle mr-3" aria-hidden="true"></i>
                     بيانات الموظف
                 </h2>
-                <button id="new-search-btn" class="bg-blue-600 text-white font-medium py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors">
-                    <i class="fas fa-search mr-2"></i>بحث جديد
-                </button>
-                <div id="update-success" class="success-badge" style="display:none;">
-                    <i class="fas fa-check-circle"></i>
-                    تم تحديث البيانات بنجاح
+                <div class="flex items-center gap-3">
+                    <button id="new-search-btn" class="bg-blue-600 text-white font-medium py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors">
+                        <i class="fas fa-search mr-2" aria-hidden="true"></i>بحث جديد
+                    </button>
+                    <div id="update-success" class="success-badge" style="display:none;" role="status" aria-live="polite">
+                        <i class="fas fa-check-circle" aria-hidden="true"></i>
+                        تم تحديث البيانات بنجاح
+                    </div>
                 </div>
             </div>
             
@@ -237,25 +240,25 @@
             
             <div class="highlight-box mt-6">
                 <div class="flex items-start">
-                    <i class="fas fa-info-circle text-blue-500 text-xl mr-3 mt-1"></i>
+                    <i class="fas fa-info-circle text-blue-500 text-xl mr-3 mt-1" aria-hidden="true"></i>
                     <div>
                         <h3 class="font-bold text-blue-800">ملاحظات هامة</h3>
                         <p class="text-slate-700 mt-2">
                             • هذه البيانات غير رسمية <br>
-                            • ولا يعتد بها امام اى جهة قانونية
+                            • ولا يعتد بها أمام أي جهة قانونية
                         </p>
                         <h4 class="font-bold text-blue-700 mt-4 mb-2">للتواصل مع الدعم الفني:</h4>
                         <ul class="text-slate-700 space-y-1">
                             <li>
-                                <i class="fab fa-whatsapp text-green-500 w-5"></i>
+                                <i class="fab fa-whatsapp text-green-500 w-5" aria-hidden="true"></i>
                                 واتساب: <a href="https://wa.me/201009844479" class="text-blue-600 hover:underline">201009844479</a>
                             </li>
                             <li>
-                                <i class="fas fa-phone text-blue-500 w-5"></i>
+                                <i class="fas fa-phone text-blue-500 w-5" aria-hidden="true"></i>
                                 اتصال مباشر: <a href="tel:+201009844479" class="text-blue-600 hover:underline">201009844479</a>
                             </li>
                             <li>
-                                <i class="fas fa-envelope text-red-500 w-5"></i>
+                                <i class="fas fa-envelope text-red-500 w-5" aria-hidden="true"></i>
                                 بريد إلكتروني: <a href="mailto:refaat252@gmail.com" class="text-blue-600 hover:underline">refaat252@gmail.com</a>
                             </li>
                         </ul>
@@ -265,9 +268,9 @@
         </div>
         
         <!-- قسم الأخطاء -->
-        <div id="error-section" class="bg-red-50 border border-red-200 rounded-xl p-5 mt-6" style="display:none;">
+        <div id="error-section" class="bg-red-50 border border-red-200 rounded-xl p-5 mt-6" style="display:none;" role="alert" aria-live="assertive">
             <div class="flex items-start">
-                <i class="fas fa-exclamation-circle text-red-500 text-2xl mt-1 mr-3"></i>
+                <i class="fas fa-exclamation-circle text-red-500 text-2xl mt-1 mr-3" aria-hidden="true"></i>
                 <div>
                     <h3 class="font-bold text-red-700 text-lg">خطأ في عملية البحث</h3>
                     <p id="error-message" class="text-red-600 mt-1">حدث خطأ أثناء عملية البحث. الرجاء المحاولة مرة أخرى.</p>
@@ -278,13 +281,13 @@
         <!-- قسم التعليمات -->
         <div id="instructions-section" class="bg-blue-50 rounded-2xl p-6 mt-10">
             <h3 class="text-xl font-bold text-blue-800 mb-4 flex items-center">
-                <i class="fas fa-info-circle mr-2"></i>
+                <i class="fas fa-info-circle mr-2" aria-hidden="true"></i>
                 تعليمات الاستخدام
             </h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div class="flex items-start">
                     <div class="bg-blue-100 p-2 rounded-lg mr-3">
-                        <i class="fas fa-id-card text-blue-600"></i>
+                        <i class="fas fa-id-card text-blue-600" aria-hidden="true"></i>
                     </div>
                     <div>
                         <h4 class="font-bold text-slate-800">الرقم القومي</h4>
@@ -293,7 +296,7 @@
                 </div>
                 <div class="flex items-start">
                     <div class="bg-blue-100 p-2 rounded-lg mr-3">
-                        <i class="fas fa-at text-blue-600"></i>
+                        <i class="fas fa-at text-blue-600" aria-hidden="true"></i>
                     </div>
                     <div>
                         <h4 class="font-bold text-slate-800">البريد الإلكتروني</h4>
@@ -302,7 +305,7 @@
                 </div>
                 <div class="flex items-start">
                     <div class="bg-blue-100 p-2 rounded-lg mr-3">
-                        <i class="fas fa-sync-alt text-blue-600"></i>
+                        <i class="fas fa-sync-alt text-blue-600" aria-hidden="true"></i>
                     </div>
                     <div>
                         <h4 class="font-bold text-slate-800">تحديث البيانات</h4>
@@ -311,7 +314,7 @@
                 </div>
                 <div class="flex items-start">
                     <div class="bg-blue-100 p-2 rounded-lg mr-3">
-                        <i class="fas fa-shield-alt text-blue-600"></i>
+                        <i class="fas fa-shield-alt text-blue-600" aria-hidden="true"></i>
                     </div>
                     <div>
                         <h4 class="font-bold text-slate-800">الأمان والخصوصية</h4>
@@ -320,54 +323,55 @@
                 </div>
             </div>
         </div>
+        </main>
     </div>
 
     <!-- نافذة إضافة البريد الإلكتروني -->
-    <div class="modal-overlay" id="email-modal-overlay"></div>
+    <div class="modal-overlay" id="email-modal-overlay" tabindex="-1"></div>
     
-    <div class="email-modal" id="email-modal">
+    <div class="email-modal" id="email-modal" role="dialog" aria-modal="true" aria-labelledby="email-modal-title" aria-describedby="modal-message">
         <div class="bg-white rounded-2xl p-6">
             <div class="flex justify-between items-center mb-4">
-                <h3 class="text-xl font-bold text-blue-700 flex items-center">
-                    <i class="fas fa-envelope mr-2"></i>
+                <h3 id="email-modal-title" class="text-xl font-bold text-blue-700 flex items-center">
+                    <i class="fas fa-envelope mr-2" aria-hidden="true"></i>
                     تحديث البريد الإلكتروني
                 </h3>
-                <button id="close-email-modal" class="text-slate-500 hover:text-slate-700">
-                    <i class="fas fa-times"></i>
+                <button id="close-email-modal" class="text-slate-500 hover:text-slate-700" aria-label="إغلاق النافذة">
+                    <i class="fas fa-times" aria-hidden="true"></i>
                 </button>
             </div>
             
             <div class="mb-4 bg-blue-50 rounded-lg p-4">
                 <div class="flex items-center">
-                    <i class="fas fa-info-circle text-blue-500 mr-2"></i>
+                    <i class="fas fa-info-circle text-blue-500 mr-2" aria-hidden="true"></i>
                     <p class="text-blue-800">
                         الرقم القومي: <span id="user-national-id" class="font-bold"></span>
                     </p>
                 </div>
-                <p id="modal-message" class="text-slate-700 mt-2"></p>
+                <p id="modal-message" class="text-slate-700 mt-2">يمكنك إضافة أو تحديث البريد الإلكتروني لهذا الحساب.</p>
             </div>
             
-            <form id="email-form">
+            <form id="email-form" novalidate>
                 <div class="mb-4">
-                    <label class="block text-slate-700 mb-2 font-medium">
-                        <i class="fas fa-envelope mr-2 text-blue-500"></i>
+                    <label for="new-email-input" class="block text-slate-700 mb-2 font-medium">
+                        <i class="fas fa-envelope mr-2 text-blue-500" aria-hidden="true"></i>
                         البريد الإلكتروني الجديد
                     </label>
-                    <input type="email" id="new-email-input"
+                    <input type="email" id="new-email-input" name="newEmail" autocomplete="email"
                         class="bg-slate-50 border border-slate-300 text-slate-900 text-lg rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block w-full px-4 py-3"
                         placeholder="example@domain.com" required>
-                    <div id="email-error" class="text-red-500 text-sm mt-2 hidden">
-                        <i class="fas fa-exclamation-circle mr-1"></i>
+                    <div id="email-error" class="text-red-500 text-sm mt-2 hidden" role="alert">
+                        <i class="fas fa-exclamation-circle mr-1" aria-hidden="true"></i>
                         <span id="email-error-message"></span>
                     </div>
                 </div>
                 
                 <div class="mb-4">
-                    <label class="block text-slate-700 mb-2 font-medium">
-                        <i class="fas fa-envelope mr-2 text-blue-500"></i>
+                    <label for="confirm-email-input" class="block text-slate-700 mb-2 font-medium">
+                        <i class="fas fa-envelope mr-2 text-blue-500" aria-hidden="true"></i>
                         تأكيد البريد الإلكتروني
                     </label>
-                    <input type="email" id="confirm-email-input"
+                    <input type="email" id="confirm-email-input" name="confirmEmail" autocomplete="off"
                         class="bg-slate-50 border border-slate-300 text-slate-900 text-lg rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block w-full px-4 py-3"
                         placeholder="أعد إدخال البريد الإلكتروني" required>
                 </div>
@@ -384,64 +388,308 @@
         </div>
     </div>
 
-    <script>
+    <!-- Templates -->
+    <template id="info-row-template">
+        <div class="info-item">
+            <div class="info-label"></div>
+            <div class="info-value"></div>
+        </div>
+    </template>
+
+    <script type="module">
     // روابط البيانات (تأكد من صحتها)
     const SHEET_URL = "https://opensheet.elk.sh/1IC_POuvxv9X2vE862HkoGlrvIIxnWgmJ4-jEMXRi0bk/Sheet1";
     const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyfjH09tRmGTdJ-QSK5PrcWD40W9tTZ5gmKd_XpZc5DHvstBe3sF5uwP2zz53aEWsNt/exec";
 
-    let usersData = [];
+    // app state
+    let usersData = []; // raw array
+    let usersById = new Map(); // normalized map for O(1) lookup
     let currentUser = null;
 
-    async function loadData() {
+    // utility: sanitize text for insertion
+    function escapeHTML(str) {
+        if (str === null || str === undefined) return '';
+        return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+
+    function normalizeKey(k) {
+        return k ? k.toString().trim().normalize('NFKC') : '';
+    }
+
+    function normalizeValue(v) {
+        if (v === null || v === undefined) return '';
+        return String(v).trim();
+    }
+
+    function buildIndex(data) {
+        usersById.clear();
+        data.forEach(item => {
+            const idCandidates = ['الرقم القومى', 'الرقم القومي', 'nationalId', 'id'];
+            let id = '';
+            for (const key of Object.keys(item)) {
+                const nk = normalizeKey(key);
+                if (nk.includes('الرقم') && nk.includes('قومي')) {
+                    id = normalizeValue(item[key]);
+                    break;
+                }
+            }
+            if (!id) {
+                // try common english keys
+                id = normalizeValue(item['nationalId'] || item['id'] || '');
+            }
+            if (id) {
+                usersById.set(id, item);
+            }
+        });
+    }
+
+    async function fetchWithTimeout(resource, options = {}) {
+        const { timeout = 10000 } = options;
+        const controller = new AbortController();
+        const id = setTimeout(() => controller.abort(), timeout);
         try {
-            const response = await fetch(SHEET_URL);
-            if (!response.ok) {
-                throw new Error(`HTTP Error: ${response.status}`);
-            }
-            usersData = await response.json();
-            if (!Array.isArray(usersData)) {
-                throw new Error("Invalid data format from sheet");
-            }
-        } catch (error) {
-            console.error("Data load failed:", error);
-            showError("فشل تحميل البيانات. الرجاء تحديث الصفحة والمحاولة مرة أخرى.");
+            const resp = await fetch(resource, { ...options, signal: controller.signal });
+            clearTimeout(id);
+            return resp;
+        } catch (err) {
+            clearTimeout(id);
+            throw err;
         }
     }
-    loadData();
+
+    async function loadData() {
+        showLoadingState(true);
+        try {
+            const response = await fetchWithTimeout(SHEET_URL, { timeout: 10000 });
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            const json = await response.json();
+            if (!Array.isArray(json)) throw new Error('Invalid sheet format');
+            usersData = json.map(row => {
+                // ensure trimmed values
+                const out = {};
+                Object.keys(row).forEach(k => out[normalizeKey(k)] = normalizeValue(row[k]));
+                return out;
+            });
+            buildIndex(usersData);
+        } catch (err) {
+            console.error('Data load failed:', err);
+            showError('فشل تحميل البيانات. الرجاء تحديث الصفحة والمحاولة مرة أخرى.');
+        } finally {
+            showLoadingState(false);
+        }
+    }
+
+    // UI helpers
+    function showLoadingState(isLoading) {
+        const btn = document.getElementById('search-btn');
+        if (isLoading) {
+            btn.disabled = true;
+            btn.innerHTML = '<span class="loading-spinner" aria-hidden="true"></span> جاري التحميل...';
+        } else {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-search mr-2" aria-hidden="true"></i> البحث';
+        }
+    }
 
     function openEmailModal(nationalId, hasEmail, prefilledEmail = '') {
+        const modal = document.getElementById('email-modal');
         document.getElementById('user-national-id').textContent = nationalId;
+        const messageEl = document.getElementById('modal-message');
         if (hasEmail) {
-            document.getElementById('modal-message').textContent = "تم العثور على بريد إلكتروني مسجل مسبقًا. يمكنك تحديثه الآن.";
+            messageEl.textContent = "تم العثور على بريد إلكتروني مسجل مسبقًا. يمكنك تحديثه الآن.";
         } else {
-            document.getElementById('modal-message').textContent = "لم يتم العثور على بريد إلكتروني مرتبط بهذا الرقم القومي. الرجاء إدخال بريدك الإلكتروني الجديد.";
+            messageEl.textContent = "لم يتم العثور على بريد إلكتروني مرتبط بهذا الرقم القومي. الرجاء إدخال البريد الإلكتروني لحفظه.";
         }
-        document.getElementById('new-email-input').value = prefilledEmail;
-        document.getElementById('email-modal').style.display = 'block';
+        document.getElementById('new-email-input').value = prefilledEmail || '';
+        document.getElementById('confirm-email-input').value = '';
+
+        // show modal and overlay
         document.getElementById('email-modal-overlay').style.display = 'block';
+        modal.style.display = 'block';
+
+        // focus management
+        const previouslyFocused = document.activeElement;
+        modal.dataset.previouslyFocused = previouslyFocused ? previouslyFocused.id || '' : '';
+        trapFocus(modal);
         document.getElementById('new-email-input').focus();
     }
-    
+
     function closeEmailModal() {
-        document.getElementById('email-modal').style.display = 'none';
+        const modal = document.getElementById('email-modal');
+        modal.style.display = 'none';
         document.getElementById('email-modal-overlay').style.display = 'none';
         document.getElementById('new-email-input').value = '';
         document.getElementById('confirm-email-input').value = '';
         document.getElementById('email-error').classList.add('hidden');
+
+        // restore focus
+        const prevId = modal.dataset.previouslyFocused;
+        if (prevId) {
+            const prev = document.getElementById(prevId);
+            if (prev) prev.focus();
+        } else {
+            document.getElementById('email-input').focus();
+        }
     }
-    
+
+    function trapFocus(modal) {
+        const focusableSelectors = 'a[href], area[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), [tabindex]:not([tabindex="-1"])';
+        const focusable = Array.from(modal.querySelectorAll(focusableSelectors));
+        if (focusable.length === 0) return;
+        let first = focusable[0];
+        let last = focusable[focusable.length - 1];
+
+        modal.addEventListener('keydown', function(e) {
+            if (e.key === 'Tab') {
+                if (e.shiftKey) {
+                    if (document.activeElement === first) {
+                        e.preventDefault();
+                        last.focus();
+                    }
+                } else {
+                    if (document.activeElement === last) {
+                        e.preventDefault();
+                        first.focus();
+                    }
+                }
+            } else if (e.key === 'Escape') {
+                closeEmailModal();
+            }
+        });
+    }
+
+    // render helpers using template (avoid innerHTML with untrusted data)
+    function makeInfoRow(label, value, iconClass) {
+        const tpl = document.getElementById('info-row-template');
+        const clone = tpl.content.cloneNode(true);
+        const labelEl = clone.querySelector('.info-label');
+        const valueEl = clone.querySelector('.info-value');
+
+        // icon
+        if (iconClass) {
+            const icon = document.createElement('i');
+            icon.className = `fas ${iconClass} ml-2 text-blue-500`;
+            icon.setAttribute('aria-hidden', 'true');
+            labelEl.appendChild(icon);
+        }
+
+        labelEl.appendChild(document.createTextNode(label));
+        valueEl.textContent = value;
+        return clone;
+    }
+
+    function clearElement(el) {
+        while (el.firstChild) el.removeChild(el.firstChild);
+    }
+
+    function showResult(user) {
+        document.querySelector('.search-container').style.display = 'none';
+        document.getElementById('instructions-section').style.display = 'none';
+        document.getElementById('error-section').style.display = 'none';
+        document.getElementById('result-section').style.display = 'block';
+
+        const fieldsToDisplay = [
+            'الاسم',
+            'الرقم القومى',
+            'الدرجة',
+            'عدد التذاكر',
+            'الحالة الاجتماعية',
+            'اساسى 30/6',
+            'اساسى يوليو 2025'
+        ];
+
+        const fieldIcons = {
+            'الاسم': 'fa-user',
+            'الرقم القومى': 'fa-id-card',
+            'الدرجة': 'fa-star',
+            'عدد التذاكر': 'fa-ticket-alt',
+            'الحالة الاجتماعية': 'fa-people-arrows',
+            'اساسى 30/6': 'fa-money-bill-wave',
+            'اساسى يوليو 2025': 'fa-money-bill-wave',
+        };
+
+        const container = document.getElementById('user-data');
+        clearElement(container);
+
+        // basic fields
+        const basicWrapper = document.createElement('div');
+        basicWrapper.className = 'divide-y divide-slate-100';
+
+        fieldsToDisplay.forEach(key => {
+            let value = user[normalizeKey(key)];
+            // try fallback for old key
+            if (key === 'اساسى 30/6' && (!value || value === '')) {
+                value = user['اساسى 2014'] || user[normalizeKey('اساسى 2014')];
+            }
+            if (value) {
+                const icon = fieldIcons[key] || 'fa-info-circle';
+                const row = makeInfoRow(key, value, icon);
+                basicWrapper.appendChild(row);
+            }
+        });
+
+        container.appendChild(basicWrapper);
+
+        // additional fields
+        const additional = Object.keys(user).filter(k => {
+            const readableKey = k;
+            return !fieldsToDisplay.some(f => normalizeKey(f) === normalizeKey(readableKey)) &&
+                normalizeKey(readableKey) !== normalizeKey('البريد') &&
+                normalizeKey(readableKey) !== normalizeKey('اساسى 2014');
+        });
+
+        if (additional.length > 0) {
+            const section = document.createElement('div');
+            section.className = 'mt-8';
+            const title = document.createElement('h3');
+            title.className = 'font-bold text-blue-700 text-xl mb-4';
+            title.textContent = 'مدفوعات';
+            section.appendChild(title);
+
+            const scroll = document.createElement('div');
+            scroll.className = 'payments-scroll p-2';
+
+            additional.forEach(key => {
+                const val = user[key];
+                if (val) {
+                    const row = makeInfoRow(key, val);
+                    scroll.appendChild(row);
+                }
+            });
+
+            section.appendChild(scroll);
+            container.appendChild(section);
+        }
+    }
+
+    function showError(message) {
+        document.querySelector('.search-container').style.display = 'block';
+        document.getElementById('instructions-section').style.display = 'block';
+        document.getElementById('result-section').style.display = 'none';
+        const err = document.getElementById('error-section');
+        document.getElementById('error-message').textContent = message;
+        err.style.display = 'block';
+    }
+
+    // event wiring
     document.getElementById('new-search-btn').addEventListener('click', function() {
         document.querySelector('.search-container').style.display = 'block';
         document.getElementById('result-section').style.display = 'none';
         document.getElementById('instructions-section').style.display = 'block';
         document.getElementById('email-input').value = '';
         document.getElementById('national-id-input').value = '';
+        document.getElementById('email-input').focus();
     });
-    
+
     document.getElementById('close-email-modal').addEventListener('click', closeEmailModal);
     document.getElementById('cancel-email-btn').addEventListener('click', closeEmailModal);
     document.getElementById('email-modal-overlay').addEventListener('click', closeEmailModal);
-    
+
     document.getElementById('login-form').addEventListener('submit', function(event) {
         event.preventDefault();
         const email = document.getElementById('email-input').value.trim();
@@ -449,40 +697,41 @@
         
         document.getElementById('email-input').classList.remove('input-error');
         document.getElementById('national-id-input').classList.remove('input-error');
-        document.getElementById('error-section').style.display = "none";
-        document.getElementById('result-section').style.display = "none";
-        document.getElementById('update-success').style.display = "none";
+        document.getElementById('error-section').style.display = 'none';
+        document.getElementById('result-section').style.display = 'none';
+        document.getElementById('update-success').style.display = 'none';
 
         document.getElementById('instructions-section').style.display = 'block';
         
         if (nationalId.length !== 14 || !/^\d{14}$/.test(nationalId)) {
-            showError("الرقم القومي يجب أن يتكون من 14 رقمًا فقط.");
+            showError('الرقم القومي يجب أن يتكون من 14 رقمًا فقط.');
             document.getElementById('national-id-input').classList.add('input-error');
             return;
         }
         
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) {
-            showError("صيغة البريد الإلكتروني غير صحيحة.");
+            showError('صيغة البريد الإلكتروني غير صحيحة.');
             document.getElementById('email-input').classList.add('input-error');
             return;
         }
-        
-        const user = usersData.find(item => item["الرقم القومى"] === nationalId);
-        
+
+        const user = usersById.get(nationalId) || null;
+
         if (!user) {
-            showError("لا يوجد مستخدم بهذا الرقم القومي في النظام.");
+            showError('لا يوجد مستخدم بهذا الرقم القومي في النظام.');
             document.getElementById('national-id-input').classList.add('input-error');
             return;
         }
-        
+
         currentUser = user;
-        
-        if (user["البريد"] && user["البريد"].trim() !== '') {
-            if (user["البريد"].trim() === email) {
+
+        const registeredEmail = user[normalizeKey('البريد')] || user['البريد'] || '';
+        if (registeredEmail && registeredEmail.trim() !== '') {
+            if (registeredEmail.trim().toLowerCase() === email.toLowerCase()) {
                 showResult(user);
             } else {
-                showError("البريد الإلكتروني المدخل غير متطابق مع البريد المسجل لهذا الرقم القومي.");
+                showError('البريد الإلكتروني المدخل غير متطابق مع البريد المسجل لهذا الرقم القومي.');
             }
         } else {
             openEmailModal(nationalId, false, email);
@@ -499,25 +748,26 @@
         errorElement.classList.add('hidden');
         
         if (email !== confirmEmail) {
-            document.getElementById('email-error-message').textContent = "البريد الإلكتروني وتأكيده غير متطابقين.";
+            document.getElementById('email-error-message').textContent = 'البريد الإلكتروني وتأكيده غير متطابقين.';
             errorElement.classList.remove('hidden');
             return;
         }
         
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) {
-            document.getElementById('email-error-message').textContent = "صيغة البريد الإلكتروني غير صحيحة.";
+            document.getElementById('email-error-message').textContent = 'صيغة البريد الإلكتروني غير صحيحة.';
             errorElement.classList.remove('hidden');
             return;
         }
         
-        const emailExists = usersData.some(user => 
-            user["البريد"] && user["البريد"].trim().toLowerCase() === email.toLowerCase() &&
-            user["الرقم القومى"] !== currentUser["الرقم القومى"]
-        );
+        const emailExists = Array.from(usersById.values()).some(u => {
+            const e = (u[normalizeKey('البريد')] || u['البريد'] || '').toLowerCase();
+            const id = u[normalizeKey('الرقم القومى')] || u['الالرقم القومى'] || '';
+            return e && e === email.toLowerCase() && id !== nationalId;
+        });
         
         if (emailExists) {
-            document.getElementById('email-error-message').textContent = "البريد الإلكتروني مستخدم بالفعل من قبل مستخدم آخر.";
+            document.getElementById('email-error-message').textContent = 'البريد الإلكتروني مستخدم بالفعل من قبل مستخدم آخر.';
             errorElement.classList.remove('hidden');
             return;
         }
@@ -527,140 +777,69 @@
         if (updateResult.success) {
             closeEmailModal();
             showResult(currentUser);
-            document.getElementById('update-success').style.display = 'flex';
-            setTimeout(() => {
-                document.getElementById('update-success').style.display = 'none';
-            }, 5000);
+            const success = document.getElementById('update-success');
+            success.style.display = 'flex';
+            setTimeout(() => success.style.display = 'none', 5000);
         } else {
             document.getElementById('email-error-message').textContent = updateResult.message;
             errorElement.classList.remove('hidden');
         }
     });
-    
+
     async function searchAndUpdateEmail(nationalId, newEmail) {
         const saveButton = document.getElementById('save-email-btn');
         const originalButtonText = saveButton.innerHTML;
-        
         try {
             saveButton.disabled = true;
-            saveButton.innerHTML = '<div class="loading-spinner"></div> جاري الحفظ...';
-            
-            const response = await fetch(GAS_WEB_APP_URL, {
+            saveButton.innerHTML = '<div class="loading-spinner" aria-hidden="true"></div> جاري الحفظ...';
+
+            const response = await fetchWithTimeout(GAS_WEB_APP_URL, {
                 method: 'POST',
-                body: JSON.stringify({
-                    nationalId: nationalId,
-                    email: newEmail
-                })
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ nationalId: nationalId, email: newEmail }),
+                timeout: 10000
             });
-            
+
             const result = await response.json();
-            
-            if (result.status === 'success') {
-                const userIndex = usersData.findIndex(u => u["الرقم القومى"] === nationalId);
-                if (userIndex !== -1) {
-                    usersData[userIndex]["البريد"] = newEmail;
-                    currentUser["البريد"] = newEmail;
+
+            if (result && result.status === 'success') {
+                // update local cache if present
+                const user = usersById.get(nationalId);
+                if (user) {
+                    user[normalizeKey('البريد')] = newEmail;
+                    user['البريد'] = newEmail;
+                    currentUser = user;
                 }
                 return { success: true, message: 'تم تحديث البريد الإلكتروني بنجاح' };
             } else {
-                return { success: false, message: result.message || 'حدث خطأ أثناء التحديث' };
+                return { success: false, message: result && result.message ? result.message : 'حدث خطأ أثناء التحديث' };
             }
         } catch (error) {
             console.error('حدث خطأ في الاتصال:', error);
-            return { success: false, message: 'فشل الاتصال بالخادم: ' + error.message };
+            return { success: false, message: 'فشل الاتصال بالخادم: ' + (error.message || error) };
         } finally {
             saveButton.disabled = false;
             saveButton.innerHTML = originalButtonText;
         }
     }
 
-    // ========== دالة showResult بعد التعديلات النهائية ==========
-    function showResult(user) {
-        document.querySelector('.search-container').style.display = "none";
-        document.getElementById('instructions-section').style.display = 'none';
-        document.getElementById('error-section').style.display = "none";
-        document.getElementById('result-section').style.display = "block";
+    // initialize
+    document.addEventListener('DOMContentLoaded', () => {
+        // load data in background
+        loadData();
 
-        // تحديث أسماء الحقول المعروضة (تم تغيير "اساسى 2014" إلى "اساسى 30/6")
-        const fieldsToDisplay = [
-            'الاسم',
-            'الرقم القومى',
-            'الدرجة',
-            'عدد التذاكر',
-            'الحالة الاجتماعية',
-            'اساسى 30/6',
-            'اساسى يوليو 2025'
-        ];
-
-        // أيقونات للحقول
-        const fieldIcons = {
-            'الاسم': 'fa-user',
-            'الرقم القومى': 'fa-id-card',
-            'الدرجة': 'fa-star',
-            'عدد التذاكر': 'fa-ticket-alt',
-            'الحالة الاجتماعية': 'fa-people-arrows',
-            'اساسى 30/6': 'fa-money-bill-wave',
-            'اساسى يوليو 2025': 'fa-money-bill-wave',
-        };
-
-        // بناء قسم البيانات الأساسية (باستخدام info-item مع الأيقونات)
-        let userHtml = '<div class="divide-y divide-slate-100">';
-        
-        fieldsToDisplay.forEach(key => {
-            // البحث عن القيمة: إذا كان المفتاح "اساسى 30/6" ولم نجده، نبحث عن "اساسى 2014"
-            let value = user[key];
-            if (key === 'اساسى 30/6' && !value && user['اساسى 2014']) {
-                value = user['اساسى 2014'];
-            }
-            
-            if (value) {
-                const icon = fieldIcons[key] || 'fa-info-circle';
-                userHtml += `
-                    <div class="info-item">
-                        <div class="info-label">
-                            <i class="fas ${icon} ml-2 text-blue-500"></i>${key}
-                        </div>
-                        <div class="info-value font-bold text-left">${value}</div>
-                    </div>`;
+        // keyboard: Esc closes modal globally
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                const modal = document.getElementById('email-modal');
+                if (modal && modal.style.display === 'block') closeEmailModal();
             }
         });
 
-        userHtml += '</div>';
-
-        // قسم المدفوعات (كان "معلومات إضافية" سابقًا) مع شريط تمرير
-        const additionalFields = Object.keys(user).filter(key => 
-            !fieldsToDisplay.includes(key) && 
-            key !== 'البريد' && 
-            key !== 'اساسى 2014' // استبعاد المفتاح القديم حتى لا يتكرر
-        );
-
-        if (additionalFields.length > 0) {
-            userHtml += `<div class="mt-8"><h3 class="font-bold text-blue-700 text-xl mb-4">مدفوعات</h3>`;
-            userHtml += `<div class="payments-scroll p-2">`; // بداية الشريط
-            
-            additionalFields.forEach(key => {
-                if (user[key]) {
-                    userHtml += `
-                        <div class="info-item">
-                            <div class="info-label">${key}</div>
-                            <div class="info-value text-left">${user[key]}</div>
-                        </div>`;
-                }
-            });
-            
-            userHtml += '</div></div>'; // إغلاق الشريط والقسم
-        }
-        
-        document.getElementById('user-data').innerHTML = userHtml;
-    }
-
-    function showError(message) {
-        document.querySelector('.search-container').style.display = "block";
-        document.getElementById('instructions-section').style.display = 'block';
-        document.getElementById('result-section').style.display = "none";
-        document.getElementById('error-section').style.display = "block";
-        document.getElementById('error-message').textContent = message;
-    }
-</script>
+        // autofocus first input
+        const emailInput = document.getElementById('email-input');
+        if (emailInput) emailInput.focus();
+    });
+    </script>
 </body>
 </html>
