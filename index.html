@@ -74,6 +74,12 @@
             transform: translateX(-2px);
             box-shadow: 0 2px 8px rgba(0,0,0,0.02);
         }
+        .info-item.highlight-red {
+            background-color: #fee2e2;
+        }
+        .info-item.highlight-red:hover {
+            background-color: #fecaca;
+        }
         .info-label {
             color: #334155;
             font-weight: 600;
@@ -208,7 +214,7 @@
                     </div>
                     
                     <button type="submit" id="search-btn"
-                        class="w-full text-white bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-xl px-4 py-3">
+                        class="w-full text-white bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-xl text-lg px-6 py-3 transition-all hover:shadow-lg">
                         <i class="fas fa-search mr-2" aria-hidden="true"></i>
                         البحث
                     </button>
@@ -503,7 +509,7 @@
         if (hasEmail) {
             messageEl.textContent = "تم العثور على بريد إلكتروني مسجل مسبقًا. يمكنك تحديثه الآن.";
         } else {
-            messageEl.textContent = "لم يتم العثور على بريد إلكتروني مرتبط بهذا الرقم القومي. الرجاء إدخال البريد الإلكتروني لحفظه.";
+            messageEl.textContent = "لم يتم العثور على بريد إلكتروني مرتبط بهذا الرقم القومي. الرجاء إدخال البريد الإلكتروني.";
         }
         document.getElementById('new-email-input').value = prefilledEmail || '';
         document.getElementById('confirm-email-input').value = '';
@@ -569,6 +575,12 @@
         const clone = tpl.content.cloneNode(true);
         const labelEl = clone.querySelector('.info-label');
         const valueEl = clone.querySelector('.info-value');
+        const infoItem = clone.querySelector('.info-item');
+
+        // Check if value contains "متأخرات" to highlight in red
+        if (value && value.includes('متأخرات')) {
+            infoItem.classList.add('highlight-red');
+        }
 
         // icon
         if (iconClass) {
