@@ -74,11 +74,9 @@
             transform: translateX(-2px);
             box-shadow: 0 2px 8px rgba(0,0,0,0.02);
         }
-        .info-item.highlight-red {
-            background-color: #fee2e2;
-        }
-        .info-item.highlight-red:hover {
-            background-color: #fecaca;
+        .info-item.highlight-red .info-value {
+            color: #dc2626 !important;
+            font-weight: 700;
         }
         .info-label {
             color: #334155;
@@ -577,7 +575,7 @@
         const valueEl = clone.querySelector('.info-value');
         const infoItem = clone.querySelector('.info-item');
 
-        // Check if value contains "متأخرات" to highlight in red
+        // Check if value contains "متأخرات" to highlight text in red
         if (value && value.includes('متأخرات')) {
             infoItem.classList.add('highlight-red');
         }
