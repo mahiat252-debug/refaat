@@ -802,7 +802,7 @@
         
         const emailExists = Array.from(usersById.values()).some(u => {
             const e = (u[normalizeKey('البريد')] || u['البريد'] || '').toLowerCase();
-            const id = u[normalizeKey('الرقم القومى')] || u['الالرقم القومى'] || '';
+            const id = u[normalizeKey('الرقم القومى')] || u[normalizeKey('الرقم القومي')] || '';
             return e && e === email.toLowerCase() && id !== nationalId;
         });
         
