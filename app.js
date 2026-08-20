@@ -320,35 +320,21 @@ function showResult(user) {
     document.getElementById('result-section').style.display = 'block';
     document.getElementById('result-section').style.animation = 'slideInUp 0.4s ease-out';
 
-    // Sticky header - Employee Data Grid (2 columns)
+    // Sticky header - Show ONLY Name and National ID
     const stickyContainer = document.getElementById('sticky-header-container');
     clearElement(stickyContainer);
 
     const stickyFields = [
         { key: 'الاسم', label: 'الاسم', icon: 'fa-user' },
-        { key: 'الرقم القومى', label: 'الرقم القومي', icon: 'fa-id-card' },
-        { key: 'الدرجة', label: 'الدرجة', icon: 'fa-star' },
-        { key: 'الحالة الاجتماعية', label: 'الحالة الاجتماعية', icon: 'fa-people-arrows' },
-        { key: 'اساسى 30/6', label: 'أساسي 2014', icon: 'fa-coins', isCurrency: true },
-        { key: 'اساسى يوليو 2025', label: 'أساسي يوليو 2026', icon: 'fa-coins', isCurrency: true },
-        { key: 'عدد التذاكر', label: 'عدد التذاكر', icon: 'fa-ticket-alt' }
+        { key: 'الرقم القومى', label: 'الرقم القومي', icon: 'fa-id-card' }
     ];
 
     stickyFields.forEach(field => {
         let value = user[normalizeKey(field.key)];
-        if (!value && field.key === 'اساسى 30/6') {
-            value = user['اساسى 2014'] || user[normalizeKey('اساسى 2014')];
-        }
-        if (!value && field.key === 'اساسى يوليو 2025') {
-            value = user['اساسى يوليو 2026'] || user[normalizeKey('اساسى يوليو 2026')] || user['اساسى يوليو 2025'];
-        }
-        if (!value && field.key === 'عدد التذاكر') {
-            value = user['عدد التذاكر'] || user['عدد_التذاكر'] || user['تذاكر'] || '';
-        }
         if (value) {
             const row = document.createElement('div');
             row.className = 'sticky-header-row';
-            const displayValue = field.isCurrency ? formatCurrency(value) : escapeHTML(String(value));
+            const displayValue = escapeHTML(String(value));
             row.innerHTML = `
                 <div class="sticky-header-label">
                     <i class="fas ${field.icon}" aria-hidden="true"></i>
