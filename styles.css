@@ -353,12 +353,13 @@ button {
     margin-bottom: 1.5rem;
     border: 1px solid #bfdbfe;
     box-shadow: var(--shadow-md);
-}
-
-.sticky-header-container {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 0.75rem;
+}
+
+.sticky-header-container {
+    display: contents;
 }
 
 .sticky-header-row {
@@ -372,6 +373,10 @@ button {
     transition: transform var(--transition-fast);
     min-height: 70px;
     justify-content: center;
+}
+
+.sticky-header-row:nth-child(n+3) {
+    display: none;
 }
 
 .sticky-header-row:hover {
@@ -1004,281 +1009,86 @@ button {
     color: #475569;
     font-weight: 600;
     font-size: 0.85rem;
-    display: flex;
-    align-items: center;
 }
 
 .info-grid-value {
     color: var(--text-main);
     font-weight: 700;
-    font-size: 0.95rem;
     word-break: break-word;
+    direction: ltr;
+    font-size: 0.95rem;
 }
 
-/* ===== Print Styles (محسّنة بالكامل) ===== */
-/* ===== Print Styles (محسّنة بالكامل) ===== */
-@media print {
-    @page {
-        size: A4;
-        margin: 12mm 10mm;
-    }
-
-    /* إخفاء كل العناصر التفاعلية والغير مرغوبة */
-    .search-container,
-    #instructions-section,
-    #new-search-btn,
-    #print-btn,
-    #email-modal,
-    #email-modal-overlay,
-    .email-modal,
-    .modal-overlay,
-    .collapse-toggle-btn,
-    .data-clear-notification,
-    .skip-link,
-    #update-success,
-    #error-section,
-    header,
-    .highlight-box {
-        display: none !important;
-    }
-
-    /* إعادة ضبط الصفحة */
-    body {
-        background: white !important;
-        color: #000 !important;
-        font-size: 10pt;
-        line-height: 1.4;
-        margin: 0;
-        padding: 0;
-    }
-
-    .container {
-        max-width: 100% !important;
-        padding: 0 !important;
-        margin: 0 !important;
-    }
-
-    /* البطاقات في الطباعة */
-    .result-card {
-        box-shadow: none !important;
-        border: 1px solid #ccc !important;
-        border-radius: 0 !important;
-        padding: 0.5rem !important;
-        margin: 0 !important;
-        background: white !important;
-        page-break-inside: avoid;
-    }
-
-    .result-card h2 {
-        font-size: 12pt !important;
-        color: #000 !important;
-        margin-bottom: 0.5rem !important;
-        border-bottom: 1px solid #ccc;
-        padding-bottom: 0.25rem;
-    }
-
-    /* البيانات الأساسية - عمودين */
-    .basic-section-sticky {
-        position: static !important;
-        box-shadow: none !important;
-        border: 1px solid #ccc !important;
-        background: #f9f9f9 !important;
-        padding: 0.5rem !important;
-        margin-bottom: 0.5rem !important;
-        page-break-inside: avoid;
-    }
-
-    .sticky-header-container {
-        display: grid !important;
-        grid-template-columns: repeat(2, 1fr) !important;
-        gap: 0.4rem !important;
-    }
-
-    .sticky-header-row {
-        padding: 0.3rem 0.5rem !important;
-        border-right: 2px solid #000 !important;
-        background: transparent !important;
-        gap: 0.15rem !important;
-        min-height: auto !important;
-    }
-
-    .sticky-header-label {
-        font-size: 8pt !important;
-        color: #333 !important;
-    }
-
-    .sticky-header-item {
-        font-size: 9pt !important;
-        color: #000 !important;
-        direction: ltr !important;
-        text-align: left !important;
-    }
-
-    /* الأقسام */
-    .salary-card {
-        box-shadow: none !important;
-        border: 1px solid #ddd !important;
-        border-radius: 0 !important;
-        padding: 0.5rem !important;
-        margin-bottom: 0.5rem !important;
-        background: white !important;
-        page-break-inside: avoid;
-    }
-
-    .section-header {
-        font-size: 10pt !important;
-        color: #000 !important;
-        border-right: 3px solid #000 !important;
-        margin-bottom: 0.5rem !important;
-    }
-
-    /* المدفوعات */
-    .payment-item {
-        padding: 0.2rem 0 !important;
-        border-bottom: 1px dotted #ccc !important;
-    }
-
-    .amount {
-        font-size: 9pt !important;
-        color: #000 !important;
-    }
-
-    .total {
-        border-top: 1px solid #000 !important;
-        padding-top: 0.4rem !important;
-        margin-top: 0.4rem !important;
-        font-size: 10pt !important;
-    }
-
-    /* فصل الصفحات */
-    .salary-card,
-    .basic-section-sticky,
-    .sticky-header-row {
-        page-break-inside: avoid;
-        break-inside: avoid;
-    }
-
-    #user-data {
-        page-break-before: auto;
-    }
-}
-
-/* ===== Responsive ===== */
+/* ===== Responsive Design ===== */
 @media (max-width: 640px) {
-    .container {
-        padding: 0.75rem;
-    }
-
     header h1 {
-        font-size: 1.5rem;
+        font-size: 1.75rem;
     }
 
-    .info-item {
-        flex-direction: column;
-        align-items: flex-start;
-        padding: 0.75rem 1rem;
-    }
-
-    .info-label {
-        min-width: unset;
-        font-size: 0.85rem;
-        margin-bottom: 0.25rem;
-    }
-
-    .info-value {
-        font-size: 0.9rem;
-        text-align: right;
-        width: 100%;
-    }
-
-    .sticky-header-row {
-        grid-template-columns: 1fr;
-        gap: 0.25rem;
-    }
-
-    .sticky-header-label {
-        font-size: 0.8rem;
-    }
-
-    .sticky-header-item {
-        font-size: 0.85rem;
-    }
-
-    .payment-item {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0.25rem;
-    }
-
-    .payment-item .amount {
-        margin-top: 0;
-    }
-
-    .total {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0.25rem;
-    }
-
-    .salary-card {
-        padding: 1rem;
-    }
-
-    .section-header {
+    header p {
         font-size: 0.95rem;
     }
 
-    .highlight-box {
+    .container {
+        max-width: 100%;
         padding: 1rem;
     }
 
-    .collapse-toggle-btn {
-        padding: 0.875rem 1rem;
-        font-size: 0.9rem;
-    }
-
-    .data-clear-notification {
-        left: 10px;
-        right: 10px;
-        bottom: 10px;
-    }
-
-    .email-modal {
-        width: 95%;
-        max-width: none;
-    }
-
-    #search-btn {
-        font-size: 1rem !important;
-        padding: 0.75rem 1rem !important;
-    }
-
-
-    .salary-grid,
-    .info-grid-section {
-        grid-template-columns: 1fr !important;
-    }
-
-
     .sticky-header-container {
-        grid-template-columns: 1fr !important;
-    }
-
-    .sticky-header-row {
-        min-height: auto !important;
-    }
-}
-
-@media (max-width: 400px) {
-    header h1 {
-        font-size: 1.25rem;
-    }
-
-    .result-card h2 {
-        font-size: 1.1rem;
+        grid-template-columns: 1fr;
     }
 
     .basic-section-sticky {
-        padding: 0.75rem;
+        grid-template-columns: 1fr;
+    }
+
+    .sticky-header-row:nth-child(n+2) {
+        display: none;
+    }
+
+    input[type="text"],
+    input[type="email"] {
+        font-size: 16px;
+    }
+
+    .salary-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .info-grid-section {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ===== Print Media Queries ===== */
+@media print {
+    .search-container,
+    .instructions-section,
+    #instructions-section,
+    #new-search-btn,
+    #print-btn,
+    .highlight-box,
+    .modal-overlay,
+    .email-modal {
+        display: none !important;
+    }
+
+    .basic-section-sticky {
+        position: static;
+        margin-top: 0;
+        page-break-inside: avoid;
+    }
+
+    .sticky-header-row:nth-child(n+3) {
+        display: flex;
+    }
+
+    .collapsible-payments-section {
+        max-height: 100%;
+        opacity: 1;
+    }
+
+    .collapse-toggle-btn {
+        display: none;
     }
 }
